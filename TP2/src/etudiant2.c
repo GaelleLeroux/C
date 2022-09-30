@@ -23,7 +23,7 @@ int main(){
     strcpy(etudiant[1].nom, "Leroux");
     strcpy(etudiant[1].adresse, "Villeurbanne");
     etudiant[1].module1 = 19;
-    etudiant[1].module2 = 19.5;
+    etudiant[1].module2 = 17;
     // Etudiant 3
     strcpy(etudiant[2].prenom, "Jacques");
     strcpy(etudiant[2].nom, "Chirac");
