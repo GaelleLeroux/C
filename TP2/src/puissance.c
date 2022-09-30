@@ -1,19 +1,21 @@
 #include <stdio.h>
 
-int puissance( int a, int b ) {
-    int u = a;
-    while( b-1 > 0 ){
-        a *= u;
-        b--;
+int puissance( int a, int b, int p ) {
+    b-=1;
+    if (b==0){
+        return a;
     }
-    return a;
+    else{
+        a*=p;
+        puissance(a,b,p);
+    }
 }
 
 
 int main() {
-    int a = 3;
-    int b = 3;
-    int c = puissance(a,b);
+    int a = 4;
+    int b = 4;
+    int c = puissance(a,b,a);
     printf("%d ^ %d = %d \n",a,b,c);
     return 0;
 }

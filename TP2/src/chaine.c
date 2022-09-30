@@ -1,28 +1,48 @@
 #include <stdio.h>
 
 int main(){
-    char a[] = "ab jaj cd";
+    char phrase1[] = "Bonjour le monde !";
 
     // Calcul du nombre de caractères
-    printf("a = %ld\n",sizeof(a)-1);
+    int i = 0;
+    while (phrase1[i] != '\0'){
+        i += 1;
+    }
+    printf("\nNombre de caractères : %d\n", i);
 
     // Copie d'une chaîne de caractère
-    char b[sizeof(a)];
-    for(int i = 0; i+1 < sizeof(a);i++){
-        b[i] = a[i];
+    char copie[sizeof(phrase1)];
+
+    for (int u=0; u<i+1;u++){
+        copie[u] = '\0';
+    } // Vide la chaîne de charactères "copie"
+
+    for(int i = 0; i+1 < sizeof(phrase1);i++){
+        copie[i] = phrase1[i];
     }
-    printf("%s\n", b);
+    printf("Copie = %s\n", copie);
 
     // Concaténation de deux chaînes de char
-    char c[sizeof(a)+sizeof(b)];
-    for(int i = 0; i < sizeof(a);i++){
-        c[i] = a[i];
+
+    char phrase2[] = " Au revoir !";
+    int j = 0;
+    while (phrase2[j] != '\0'){
+        j += 1;
     }
-    printf("%s\n", c);
-    for(int i = 0; i < sizeof(b);i++){
-        c[i+sizeof(a)] = b[i];
+    char concat[i+j];
+    for (int u=0; u<i+j+1;u++){
+        concat[u] = '\0';
+    } // Vide la chaîne de caractères "concat"
+
+    i = 0;
+    for(i; i+1 < sizeof(phrase1);i++){
+        concat[i] = phrase1[i];
     }
-    printf("c = %ld\n",sizeof(c)-2);
-    printf("%s\n", c);
+
+    j = 0;
+    for(j; j+1 < sizeof(phrase2);j++){
+        concat[i+j] = phrase2[j];
+    }
+    printf("Concatenation = %s\n\n", concat);
     return 0;
 }
