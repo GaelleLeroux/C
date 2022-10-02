@@ -1,17 +1,24 @@
+/*
+* Nom de fichier : couleurs.c
+* Objectifs : Créer un tableau de 10 couleurs en utilisant struct.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 12, 19, 21.
+*/
+
 #include <stdio.h>
 #include <string.h>
 
 int main(){
-    typedef struct details{
+    typedef struct details{ // Création de la structure détails.
         short rouge;
         short vert;
         short bleu;
         short alpha;
     }details;
 
-    details couleur[10];
+    details couleur[10]; // Définition de la taille de la structure.
 
-    couleur[0].rouge = 0x31;
+    couleur[0].rouge = 0x31; // Affectation des éléments dans la structure.
     couleur[0].vert = 0xd9;
     couleur[0].bleu = 0xdc;
     couleur[0].alpha = 0x7f;
