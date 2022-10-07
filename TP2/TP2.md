@@ -122,7 +122,7 @@ valeur à cette position par 3. N'utilisez pas la notation indicielle
 pour parcourir les tableaux (par exemple, i [3], i [5] etc.).
 Utilisez les pointeurs.
 
-
+.
 #### Astuce
 
 -   Pour l'exercice 2.5, pensez à utiliser \*(s+i) etc (e.g, si s est
