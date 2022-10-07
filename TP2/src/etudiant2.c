@@ -1,9 +1,16 @@
+/*
+* Nom de fichier : etudiants2.c
+* Objectifs : Créer un tableau étudiant pour la gestion de données en utilisant struct.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 12, 19, 21.
+*/
+
 #include <stdio.h>
 #include <string.h>
 
 int main(){
     // Initialisation du tableau
-    typedef struct details{
+    typedef struct details{ // Création de la structure détails.
         char prenom[30];
         char nom[30];
         char adresse[30];
@@ -11,9 +18,9 @@ int main(){
         short module2;
     } details;
 
-    details etudiant[5];
+    details etudiant[5]; // Définition de la taille de la structure.
     // Etudiant 1
-    strcpy(etudiant[0].prenom, "Evann");
+    strcpy(etudiant[0].prenom, "Evann"); // Affectation des éléments dans la structure.
     strcpy(etudiant[0].nom, "Nalewajek");
     strcpy(etudiant[0].adresse, "Villeurbanne");
     etudiant[0].module1 = 1;
