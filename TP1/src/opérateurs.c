@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : opérateurs.c
+* Objectifs : Tester toutes les opérateurs à l'aide de printf
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 14-21
+*/
+
 #include <stdio.h> 
 
 int main () {

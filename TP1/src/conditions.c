@@ -1,3 +1,12 @@
+/*
+* Nom de fichier : conditions.c
+* Objectifs : - print tous les nombres divisibles par 2 ET 15
+              - print tous les nombres divisibles par 103 OU 107
+              - print tous les nombres divisibles par 5 OU 7 mais pas 3
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 16, 17, 27, 31, 38, 41, 45
+*/
+
 #include <stdio.h> 
 
 int main () {

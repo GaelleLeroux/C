@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : cercle.c
+* Objectifs : Réaliser des opérations dans la fonction printf.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 12, 13
+*/
+
 #include <stdio.h> 
 
 int main () {

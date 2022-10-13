@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : sizeof.c
+* Objectifs : Afficher dans le terminal la taille en octet de tous les types de variables
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 12-24
+*/
+
 #include <stdio.h> 
 #include <limits.h>
 

@@ -1,3 +1,11 @@
+/*
+* Nom de fichier : grand-petit.c
+* Objectifs : Permet de determiner la valeur la plus grande et la plus petite dans un tableau d'entiers aléatoires
+*             à l'aide d'un pointeur.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 33, 39, 42
+*/
+
 #include <stdio.h>
 #include <stdlib.h>  // permet d'include la fonction rand, qui nous permet de créer un tableau de 100 valeurs aléatoires
 #include <time.h>    // Nécessaire pour l'étape d'initialisation du générateur pseudo-aléatoire

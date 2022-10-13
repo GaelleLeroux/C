@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : tri.c
+* Objectifs : Trier une liste de 100 entiers.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 32, 40, 48-58
+*/
+
 #include <stdio.h>
 #include <stdlib.h>  // permet d'include la fonction rand, qui nous permet de créer un tableau de 100 valeurs aléatoires
 #include <time.h>    // Nécessaire pour l'étape d'initialisation du générateur pseudo-aléatoire

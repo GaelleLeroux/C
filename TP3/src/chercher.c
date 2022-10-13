@@ -103,11 +103,6 @@ int main(){
     else{
         printf("La phrase n'a pas été trouvée. \n");
     }
-
-
-
-
-
-
+    
     return 0;
 }

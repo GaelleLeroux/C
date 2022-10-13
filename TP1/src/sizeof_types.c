@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : sizeof_types.c
+* Objectifs : Connaître la taille en octet de toutes les variables grâce à sizeof
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 12-24
+*/
+
 #include <stdio.h> 
 #include <limits.h>
 

@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : opérateurs2.c
+* Objectifs : Réaliser une opération avec l'opérateur entré par l'utilisateur
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 13, 17-24, 26-53
+*/
+
 #include <stdio.h> 
 
 int main () {

@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : binaire.c
+* Objectifs : Afficher un entier en base 10 sous forme binaire.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 15-19
+*/
+
 #include <stdio.h> 
 
 int main () {

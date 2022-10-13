@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : variables.c
+* Objectifs : Afficher dans la console tous les types de variables avec printf
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 11-23, 25-37
+*/
+
 #include <stdio.h> 
 
 int main () {
