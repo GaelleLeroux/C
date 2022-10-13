@@ -3,13 +3,14 @@
 * Objectifs : - Exercice 3.4 : Chercher un entier dans un tableau.
 *             - Exercie 3.8 : Chercher une chaine de caractère dans un tableau.
 * Auteurs : Evann Nalewajek , Gaëlle Leroux
-* Lignes importantes de code : - Exercice 3.4 : 20-24, 28, 29, 35, 37.
-*                              - Exercice 3.8 : 
+* Lignes importantes de code : - Exercice 3.4 : 21-25, 30, 31, 37, 46.
+*                              - Exercice 3.8 : 63, 71, 74, 78, 80, 81-84, 87 94.
 */
 
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 int main(){
@@ -31,9 +32,11 @@ int main(){
         a[i] = n;
     }
 
-    int num;
-    printf("Veuillez entrer l'entier recherché : ");
-    scanf("%d", &num); // Permet à l'utilisateur d'entrer un nombre dans le terminal
+    char num[20];
+    printf("Veillez entrer un nombre : ");
+    fgets(num,20,stdin); // Demande un nombre à l'utilisateur
+    printf("Le nombre entré est : %d \n",atoi(num));
+
 
     // Initialisation du pointeur
     void *iptr = &a[0];
@@ -41,7 +44,7 @@ int main(){
     int present = 0;
 
     for (int i = 0 ; i < sizeof(a)/4 ; i++){
-        if (*((int*)iptr+i) == num){
+        if (*((int*)iptr+i) == atoi(num)){  // atoi transforme une chaine de caractère en nombre
             present = 1;
             break;  // On évite de traverser le tableau pour rien
         }
@@ -59,11 +62,6 @@ int main(){
 
     // Création d'un tableau composé de 10 phrases de taille 30 max.
     char phrase[10][30]={"Bonjour le monde","Au revoir","Salut","Hello le monde","Evann","Gaelle","Arthur","Raphael","Sebastien","Theotime !"}; 
-
-    char string[20];
-    printf("Enter the string : ");
-    fgets(string,20,stdin);
-    printf("\nThe string is : %s",string);
 
     char mot[30]; // Création de la phrase recherchée.
     printf("Veuillez entrer la phrase recherché : ");
