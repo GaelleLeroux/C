@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : recherche_dichotomique.c
+* Objectifs : - Chercher un nombre dans une liste via une recherche dichotomique.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+* Lignes importantes de code : 15, 22, 37, 38, 53, 59, 6, 63, 65, 67, 71, 74, 75
+*/
+
 #include <stdio.h>
 #include <stdlib.h>  // permet d'include la fonction rand, qui nous permet de créer un tableau de 100 valeurs aléatoires
 #include <time.h>    // Nécessaire pour l'étape d'initialisation du générateur pseudo-aléatoire
@@ -49,22 +56,23 @@ int main () {
     int divise = 2;
     void *iiptr = &a[i];
     int present = 0;
-    int mouvement = 0;
+    int mouvement = 0; // permettra de savoir si la liste a été coupée à gauche ou à droite et donc de se replacer au bon endroit pour la comparaison
     int u = 100;
     
-    while (i!=0){
-        divise*=2;
+    while (i!=0){ // Tant que on peut diviser la liste donc que nous n'avons pas encore finit rechercher le nombre
+        divise*=2; // On la redivise par 2
         i = (sizeof(a)/4)/(divise);
-        if (num == (*((int*)iiptr+mouvement))){
-            present = 1;
-            break;
+        if (num == (*((int*)iiptr+mouvement))){ // On compare le numéro entrer avec le milieux de la liste restante
+            present = 1; 
+            break; // On sort si l enombre a éé=té trouvé
         }
-        else if (num < (*((int*)iiptr+mouvement))){
+        else if (num < (*((int*)iiptr+mouvement))){ // Vérifie si l enmbre est au dessus ou au dessous
             if (((sizeof(a)/4)/(divise)) %2==0){
-                mouvement -= i;
+                mouvement -= i; // Si la liste est paire on enlève la moitié de la liste
             }
             else {
-                mouvement -= (i+1);
+                mouvement -= (i+1); // Si elle est impaire on enlève la moitié+1 de la liste
+                                    // Cela nous permet de bien englober les bords
             }
         }
         else {
