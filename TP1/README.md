@@ -1,15 +1,14 @@
 # Bibliothèques
 * stdio.h
-*limits.h
+* limits.h
 
 # Références
-*groupe D
-*https://github.com/johnsamuelwrites/jscourses/tree/master/c/2022
+* groupe D
+* https://github.com/johnsamuelwrites/jscourses/tree/master/c/2022
 
 # Difficulté
-*Facile
+* Facile
 
 # Commentaires
 * Incompréhension des priorités des opérateurs (Ex : a&b==2 FAUX? et (a&b)==2 VRAI?)
 * 
-
