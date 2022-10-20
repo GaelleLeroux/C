@@ -1,0 +1,1 @@
+char lire_fichier(char *,char *);
