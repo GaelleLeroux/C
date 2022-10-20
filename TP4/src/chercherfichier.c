@@ -17,6 +17,9 @@ char lire_fichier(char *nom_de_fichier,char *mot){
     while(1){
         size = read(fd,&content,1);
         if (size<1){
+            if (cpt!=0){
+                printf("Ligne %d, %d fois\n",ligne,cpt);
+            }
             break;
         }
         if (content == mot[ou]){
@@ -33,7 +36,6 @@ char lire_fichier(char *nom_de_fichier,char *mot){
             ligne +=1;
             cpt=0;
         }
-        //printf("%c",content);
     }
     printf("\n");
     close(fd);
@@ -41,11 +43,12 @@ char lire_fichier(char *nom_de_fichier,char *mot){
 }
 
 int main(int argc, char** argv){
-    char mot = argv[2][0];
-    char nom_fichier = argv[1][0];
+    char* mot = argv[1];
+    char* nom_fichier = argv[2];
+    printf("\ncmdline args count=%d\n", argc);
 
-    lire_fichier("./message.txt","Hola");
-
-
-
+    for (int i=0; i< argc; i++) {
+        printf("arg%d=%s\n", i, argv[i]);
+}
+    lire_fichier(nom_fichier, mot);
 }
