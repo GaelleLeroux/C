@@ -1,6 +1,9 @@
 # include <stdio.h>
+# include <stdlib.h>
 # include "operator.h"
 # include "fichier.h"
+# include <time.h>
+# include "liste.h"
 
 int main() {
     int num1= 4;
@@ -51,11 +54,35 @@ int main() {
 
     ///////////////////////////////////////////////////////////////////////
     // Exercice 2
+    //lire_fichier("./message.txt");
 
-    lire_fichier("./message.txt");
+    //ecrire_dans_fichier("./message.txt"," Hola");
 
-    ecrire_dans_fichier("./message.txt"," Hola");
+    ///////////////////////////////////////////////////////////////////////
+    // Exercice 7
 
+    srand(time(NULL));
 
+    int nbr_couleurs = 10;
+    struct couleur TableauCouleurs[nbr_couleurs];
+
+    for(int i = 1; i < nbr_couleurs; i++){
+        printf("%hhu", TableauCouleurs[i].rouge);
+        TableauCouleurs[i].rouge = rand() % 256;
+        TableauCouleurs[i].vert = rand() % 256;
+        TableauCouleurs[i].bleu = rand() % 256;
+        TableauCouleurs[i].alpha = rand() % 256;
+    }
+
+    struct liste_couleurs *liste;
+    liste = malloc(sizeof(liste));
+    int cpt = nbr_couleurs;
+    int j = 0;
+    while(cpt != 0){
+        cpt--;
+        insertion(&TableauCouleurs[j], liste);
+        j++;
+    }
+    parcours(liste);
     return 0;
 }

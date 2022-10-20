@@ -45,10 +45,6 @@ char lire_fichier(char *nom_de_fichier,char *mot){
 int main(int argc, char** argv){
     char* mot = argv[1];
     char* nom_fichier = argv[2];
-    printf("\ncmdline args count=%d\n", argc);
 
-    for (int i=0; i< argc; i++) {
-        printf("arg%d=%s\n", i, argv[i]);
-}
     lire_fichier(nom_fichier, mot);
 }
