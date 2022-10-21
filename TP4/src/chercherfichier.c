@@ -25,6 +25,9 @@ char lire_fichier(char *nom_de_fichier,char *mot){
         if (content == mot[ou]){
             ou +=1;
         }
+        else{
+            ou = 0;
+        }
         if (ou == taille){
             cpt+=1;
             ou = 0;
