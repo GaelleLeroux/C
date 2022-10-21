@@ -30,6 +30,6 @@ void lire_dossier(const char * repertoire){
 }
 
 int main(){
-    lire_dossier("cd ..");
+    lire_dossier(".");
     return(0);
 }

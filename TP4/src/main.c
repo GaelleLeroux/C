@@ -63,24 +63,27 @@ int main() {
 
     srand(time(NULL));
 
-    int nbr_couleurs = 10;
-    struct couleur TableauCouleurs[nbr_couleurs];
-
-    for(int i = 1; i < nbr_couleurs; i++){
-        printf("%hhu", TableauCouleurs[i].rouge);
-        TableauCouleurs[i].rouge = rand() % 256;
-        TableauCouleurs[i].vert = rand() % 256;
-        TableauCouleurs[i].bleu = rand() % 256;
-        TableauCouleurs[i].alpha = rand() % 256;
-    }
-
     struct liste_couleurs *liste;
     liste = malloc(sizeof(liste));
-    int cpt = nbr_couleurs;
+    struct couleur NewCouleurs2;
+    printf("hola");
+    NewCouleurs2.rouge = rand() % 256;
+    NewCouleurs2.vert = rand() % 256;
+    NewCouleurs2.bleu = rand() % 256;
+    NewCouleurs2.alpha = rand() % 256;
+    printf("coucou\n");
+    liste->couleur = NewCouleurs2;
+    printf("coucou2\n");
+    int cpt = 9;
     int j = 0;
+    struct couleur NewCouleurs;
     while(cpt != 0){
         cpt--;
-        insertion(&TableauCouleurs[j], liste);
+        NewCouleurs.rouge = rand() % 256;
+        NewCouleurs.vert = rand() % 256;
+        NewCouleurs.bleu = rand() % 256;
+        NewCouleurs.alpha = rand() % 256;
+        insertion(&NewCouleurs, liste);
         j++;
     }
     parcours(liste);
