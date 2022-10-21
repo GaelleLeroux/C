@@ -63,28 +63,30 @@ int main() {
 
     srand(time(NULL));
 
+    int nbr_couleurs = 10;
     struct liste_couleurs *liste;
-    liste = malloc(sizeof(liste));
-    struct couleur NewCouleurs2;
-    printf("hola");
-    NewCouleurs2.rouge = rand() % 256;
-    NewCouleurs2.vert = rand() % 256;
-    NewCouleurs2.bleu = rand() % 256;
-    NewCouleurs2.alpha = rand() % 256;
-    printf("coucou\n");
-    liste->couleur = NewCouleurs2;
-    printf("coucou2\n");
-    int cpt = 9;
-    int j = 0;
-    struct couleur NewCouleurs;
-    while(cpt != 0){
+    liste = malloc(sizeof(struct liste_couleurs));
+
+    // Initialisation de la première couleur de liste
+    struct couleur *premiere_couleur;
+    premiere_couleur = malloc(sizeof(struct couleur));
+    premiere_couleur->rouge = rand() %256;
+    premiere_couleur->vert = rand() %256;
+    premiere_couleur->bleu = rand() %256;
+    premiere_couleur->alpha = rand() %256;
+    liste->couleur = premiere_couleur;
+
+    int cpt = nbr_couleurs;
+    
+    while(cpt != 1){
         cpt--;
-        NewCouleurs.rouge = rand() % 256;
-        NewCouleurs.vert = rand() % 256;
-        NewCouleurs.bleu = rand() % 256;
-        NewCouleurs.alpha = rand() % 256;
-        insertion(&NewCouleurs, liste);
-        j++;
+        struct couleur *new_color;
+        new_color = malloc(sizeof(struct couleur));
+        new_color->rouge = rand() %256;
+        new_color->vert = rand() %256;
+        new_color->bleu = rand() %256;
+        new_color->alpha = rand() %256;
+        insertion(new_color, liste);
     }
     parcours(liste);
     return 0;
