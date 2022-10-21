@@ -32,7 +32,7 @@ void lire_dossier(const char * repertoire){
 }
 
 void lire_dossier_recursif(char *repertoire){
-    printf("on veut lire : %s \n",repertoire);
+    printf("%s :\n",repertoire);
     DIR *dirp ;
     struct dirent * ent;
 
@@ -51,17 +51,17 @@ void lire_dossier_recursif(char *repertoire){
         if (!strcmp(ent->d_name,".") || !strcmp(ent->d_name,"..")){
             continue;
         }
-
         if (ent->d_type==4){
-            repertoire = malloc(sizeof(repertoire)+10);
-            strcat(repertoire,"./.");
-            strcat(repertoire,ent->d_name);
-            printf("repertoire : %s\n",repertoire);
-            lire_dossier_recursif(repertoire);
+            char *new_repertoire = malloc(strlen(repertoire)+2+strlen(ent->d_name));
+            memset(new_repertoire,0,strlen(repertoire)+2+strlen(ent->d_name));
+            strcat(new_repertoire,repertoire);
+            strcat(new_repertoire,"/");
+            strcat(new_repertoire,ent->d_name);
+            lire_dossier_recursif(new_repertoire);
         }
-        printf("%s\n",ent->d_name);
-        
+        printf("%s ",ent->d_name);
     }
+    printf("\n");
     closedir(dirp);
     }
 
