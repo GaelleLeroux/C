@@ -4,14 +4,11 @@
 
 void insertion(struct couleur *coul, struct liste_couleurs *liste){
     struct liste_couleurs *nouveau;
-    nouveau = malloc(sizeof(nouveau));
-    printf("coul : %d\n",coul->rouge);
+    nouveau = malloc(sizeof(*nouveau));
 
     nouveau->couleur = coul;
-    printf("nouveau : %d\n",nouveau->couleur->rouge);
     nouveau->suivant = liste->suivant;
     liste->suivant = nouveau;
-    printf("liste : %d\n",liste->suivant->couleur->rouge);
 }
 
 void parcours(liste_couleurs *liste){
