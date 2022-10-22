@@ -70,10 +70,13 @@ int recois_envoie_message(int socketfd)
   sscanf(data, "%s:", code);
 
   // Si le message commence par le mot: 'message:'
-  if (strcmp(code, "message:") == 0)
-  {
-    renvoie_message(client_socket_fd, data);
-  }
+  char message[1024];
+  printf("Votre réponse (max 1000 caracteres): ");
+  fgets(message, sizeof(message), stdin);
+  strcpy(data, "message: ");
+  strcat(data, message);
+  renvoie_message(client_socket_fd, data);
+  
 
   // fermer le socket
   close(socketfd);
