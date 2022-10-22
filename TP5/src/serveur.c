@@ -108,79 +108,32 @@ int recois_envoie_message(int socketfd)
   // Si le message commence par le mot: 'message:'
   strcpy(data, "calcul: ");
 
+  int tempo =0;
+  int j=1;
+  char message;
+
   if (ok==3){
-    int tempo =0;
-    int j=1;
-    char message;
-    void *pmes =&message;
     switch (op){
       case '+' :
       tempo = nmb1 + nmb2;
-      message = tempo + '0';
+      printf("%d",tempo);
+      message = (char)tempo;
+      printf("%c",message);
       j = 1;
       while(tempo/10>0){
           tempo = tempo/10;
           j+=1;
         }
-      *((char*)pmes+j)='\0';
-      strcat(data, &message);
       break;
-
-      case '-' :
-      tempo = nmb1 - nmb2;
-      message = tempo + '0';
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
-        }
-      *((char*)pmes+j)='\0';
-      strcat(data, &message);
-      break;
-
-      case '*' :
-      tempo = nmb1 * nmb2;
-      message = tempo + '0';
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
-        }
-      *((char*)pmes+j)='\0';
-      strcat(data, &message);
-      break;
-
-      case '/' :
-      tempo = nmb1 / nmb2;
-      message = tempo + '0';
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
-        }
-      *((char*)pmes+j)='\0';
-      strcat(data, &message);
-      break;
-
-      case '%' :
-      tempo = nmb1 % nmb2;
-      message = tempo + '0';
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
-        }
-      *((char*)pmes+j)='\0';
-      strcat(data, &message);
-      break;
-      
     }
   }
   else{
     char message[1024] = "Mauvais calcul";
   }
 
-  
+  void *pmes =&message;
+  *((char*)pmes+j)='\0';
+  strcat(data, &message);
   
   renvoie_message(client_socket_fd, data);
   
