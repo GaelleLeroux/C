@@ -75,7 +75,6 @@ int recois_envoie_message(int socketfd)
   for (int j=0;(i+j)<strlen(data);j++){
     void *ptr = &data[i+j];
     void *pespace = &espace[0];
-    printf("%c\n",data[i+j]);
     if (*((char*)ptr)!=*((char*)pespace)){
       if (ok==0){
         op = data[i+j];
@@ -94,46 +93,96 @@ int recois_envoie_message(int socketfd)
       }
       if (ok==2){
         nmb2 = atoi(&data[i+j]);
-        //printf("on met dans nmb 2 :%c\n",data[i+j]);
         ok+=1;
       }
     }
     }
 
   
-  printf("op :%c num1 : %d num2 : %d \n",op,nmb1,nmb2);
   char code[10];
   sscanf(data, "%s:", code);
 
-  // Si le message commence par le mot: 'message:'
+
   strcpy(data, "calcul: ");
 
-  int tempo =0;
+  float tempo =0;
   int j=1;
-  char message;
+  int m = 0;
+  char message[1024];
 
   if (ok==3){
     switch (op){
       case '+' :
       tempo = nmb1 + nmb2;
-      printf("%d",tempo);
-      message = (char)tempo;
-      printf("%c",message);
+      sprintf(message,"%f",tempo);
       j = 1;
       while(tempo/10>0){
           tempo = tempo/10;
           j+=1;
         }
+      m+=1;
+      break;
+
+      case '-' :
+      tempo = nmb1 - nmb2;
+      sprintf(message,"%f",tempo);
+      j = 1;
+      while(tempo/10>0){
+          tempo = tempo/10;
+          j+=1;
+        }
+      m+=1;
+      break;
+
+      case '*' :
+      tempo = nmb1 * nmb2;
+      sprintf(message,"%f",tempo);
+      j = 1;
+      while(tempo/10>0){
+          tempo = tempo/10;
+          j+=1;
+        }
+      m+=1;
+      break;
+
+      case '/' :
+      tempo = (float)nmb1 / nmb2;
+      printf("tempo : %f\n",tempo);
+      sprintf(message,"%f",tempo);
+      j = 1;
+      while(tempo/10>0){
+          tempo = tempo/10;
+          j+=1;
+        }
+      m+=1;
+      break;
+
+      case '%' :
+      tempo = nmb1 % nmb2;
+      printf("tempo : %f\n",tempo);
+      sprintf(message,"%f",tempo);
+      j = 1;
+      while(tempo/10>0){
+          tempo = tempo/10;
+          j+=1;
+        }
+      m+=1;
       break;
     }
-  }
-  else{
-    char message[1024] = "Mauvais calcul";
+    
   }
 
-  void *pmes =&message;
+  char message2[15] = "Mauvais calcul";
+
+  void *pmes =&message[0];
   *((char*)pmes+j)='\0';
-  strcat(data, &message);
+
+  if (m==1){
+  strcat(data, message);
+  }
+  else{
+    strcat(data, message2);
+  }
   
   renvoie_message(client_socket_fd, data);
   

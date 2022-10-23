@@ -29,7 +29,7 @@ int envoie_recois_message(int socketfd)
 
   // Demandez à l'utilisateur d'entrer un message
   char message[1024];
-  printf("Votre message (max 1000 caracteres): ");
+  printf("Votre calcul (une lettre est considérée comme valant 0): ");
   fgets(message, sizeof(message), stdin);
   strcpy(data, "calcul: ");
   strcat(data, message);
