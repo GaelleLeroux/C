@@ -48,7 +48,9 @@ int recois_envoie_message(int socketfd)
     perror("accept");
     return (EXIT_FAILURE);
   }
+  char fin[4]="fin";
 
+  while(1){
   // la réinitialisation de l'ensemble des données
   memset(data, 0, sizeof(data));
 
@@ -66,6 +68,10 @@ int recois_envoie_message(int socketfd)
    * Les données envoyées par le client peuvent commencer par le mot "message :" ou un autre mot.
    */
   printf("Message recu: %s\n", data);
+  if ((&data[1]==&fin[1])&&(&data[2]==&fin[2])&&(&data[3]==&fin[3])){
+    printf("Je pars en week-end");
+    break;
+  }
   int ok = 0;
   int i = 8;
   char op;
@@ -93,6 +99,14 @@ int recois_envoie_message(int socketfd)
       }
       if (ok==2){
         nmb2 = atoi(&data[i+j]);
+        int nmb3 = atoi(&data[i+j-1]);
+        printf("nmb3 : %d\n",atoi(&data[i+j-3]));
+        printf("nmb3 : %d\n",atoi(&data[i+j-2]));
+        printf("nmb3 : %d\n",atoi(&data[i+j-1]));
+        printf("nmb3 : %d\n",atoi(&data[i+j]));
+        printf("nmb3 : %d\n",atoi(&data[i+j+1]));
+        printf("nmb3 : %d\n",atoi(&data[i+j+2]));
+        printf("Message recu: %s\n", data);
         ok+=1;
       }
     }
@@ -114,6 +128,7 @@ int recois_envoie_message(int socketfd)
     switch (op){
       case '+' :
       tempo = nmb1 + nmb2;
+      printf("tempo : %f nmb1 : %i nmb2 : %i \n",tempo,nmb1,nmb2);
       sprintf(message,"%f",tempo);
       j = 1;
       while(tempo/10>0){
@@ -187,6 +202,9 @@ int recois_envoie_message(int socketfd)
   renvoie_message(client_socket_fd, data);
   
 
+  
+  
+  }
   // fermer le socket
   close(socketfd);
   return (EXIT_SUCCESS);

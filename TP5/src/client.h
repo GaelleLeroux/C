@@ -19,4 +19,6 @@
  */
 int envoie_recois_message(int socketfd);
 
+int demande_moyenne(int socketfd);
+
 #endif

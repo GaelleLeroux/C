@@ -12,8 +12,145 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <unistd.h>
 
 #include "client.h"
+
+
+int moyenne_demande(int socketfd){
+  char data[1024];
+  // la réinitialisation de l'ensemble des données
+  memset(data, 0, sizeof(data));
+
+  char adresse[1024];
+  strcpy(adresse,"../etudiant/1/note1.txt");
+  char message[1024];
+  memset(message,0,sizeof(message));
+  strcpy(message,"+ ");
+  char adresse_tempo[1024];
+  memset((adresse+18),'\0',5);
+  // Initialisation premier nombre du message 
+  int i = 1;
+  sprintf(adresse_tempo,"%d",i);
+  strcat(adresse_tempo,".txt");
+  strcat(adresse,adresse_tempo);
+  printf("adresse : %s\n",adresse);
+  char content;
+  int fd, count, size;
+  fd = open(adresse,O_RDONLY);
+  for(int k=0;k<2;k++){
+      size = read(fd,&content,1);
+      if (size<1){
+          break;
+      }
+      if (&content!="\n"){strcat(message,&content);}
+  }
+  strcat(message," ");
+  printf("le premier 3 : %c\n",message[3]);
+  close(fd);
+  
+
+  // on rajoute le deuxième nombre
+  for(int i=2;i<6;i++){
+    printf("le message pr l'instant : %s",message);
+    memset((adresse+18),'\0',5);
+    sprintf(adresse_tempo,"%d",i);
+    strcat(adresse_tempo,".txt");
+    strcat(adresse,adresse_tempo);
+    printf("adresse 2 : %s\n",adresse);
+    char content;
+    int fd, count, size;
+    fd = open(adresse,O_RDONLY);
+    for(int k=0;k<2;k++){
+      size = read(fd,&content,1);
+      if (size<1){
+          break;
+      }
+      if (&content!="\n"){strcat(message,&content);}
+  }
+    strcat(message," ");
+    close(fd);
+    printf("le message a la fin: %s\n",message);
+    printf("le message a la fin: %c\n",message[1]);
+    printf("le message a la fin: %c\n",message[2]);
+    printf("le message a la fin: %c\n",message[3]);
+    printf("le message a la fin: %c\n",message[4]);
+    printf("le message a la fin: %c\n",message[5]);
+    printf("le message a la fin: %c\n",message[6]);
+    printf("le message a la fin: %c \n",message[7]);
+    memset(data, 0, sizeof(data));
+    strcpy(data, "calcul: ");
+    strcat(data, message);
+
+    // on l'envoie au serveur
+    int write_status = write(socketfd, data, strlen(data));
+    if (write_status < 0)
+    {
+      perror("erreur ecriture");
+      exit(EXIT_FAILURE);
+    }
+    // on lit la réponse
+    int read_status = read(socketfd, data, sizeof(data));
+    if (read_status < 0)
+    {
+      perror("erreur lecture");
+      return -1;
+    }
+    printf("data : %s\n",data);
+    // réarrange le message pour addition le prochain nombre
+    memset(message,'\0',strlen(message));
+    strcpy(message,"+ ");
+    strcat(message,&data[9]);
+    strcat(message,&data[10]);
+    strcat(message,&data[11]);
+    printf("message 3 fin for : %s\n",message);
+  }
+  memset(message,'\0',strlen(message));
+  strcpy(message,"/ ");
+  strcat(message,data);
+  strcat(message," ");
+  int j = 5;
+  char tempo_div[1024];
+  sprintf(tempo_div,"%d",j);
+  strcat(message,tempo_div);
+  memset(data, 0, sizeof(data));
+  strcpy(data, "calcul: ");
+  strcat(data, message);
+
+  int write_status = write(socketfd, data, strlen(data));
+  if (write_status < 0)
+  {
+    perror("erreur ecriture");
+    exit(EXIT_FAILURE);
+  }
+  // on lit la réponse
+  int read_status = read(socketfd, data, sizeof(data));
+  if (read_status < 0)
+  {
+    perror("erreur lecture");
+    return -1;
+  }
+
+  printf("Moyenne eleve 1: %s\n", data);
+  memset(message,'\0',strlen(message));
+  strcpy(message,"fin");
+  memset(data, 0, sizeof(data));
+  strcpy(data, "calcul: ");
+  strcat(data, message);
+
+  write_status = write(socketfd, data, strlen(data));
+  if (write_status < 0)
+  {
+    perror("erreur ecriture");
+    exit(EXIT_FAILURE);
+  }
+
+  return 0;
+
+}
 
 /*
  * Fonction d'envoi et de réception de messages
@@ -87,8 +224,11 @@ int main()
     exit(EXIT_FAILURE);
   }
 
-  // appeler la fonction pour envoyer un message au serveur
-  envoie_recois_message(socketfd);
+  //appeler la fonction pour envoyer un message au serveur
+  //envoie_recois_message(socketfd);
 
-  close(socketfd);
+  moyenne_demande(socketfd);
+
+  //close(socketfd);
+  return 0;
 }
