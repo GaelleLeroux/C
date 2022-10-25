@@ -76,8 +76,8 @@ int recois_envoie_message(int socketfd)
   int i = 8;
   char op;
   char espace[1]=" ";
-  int nmb1;
-  int nmb2;
+  float nmb1;
+  float nmb2;
   for (int j=0;(i+j)<strlen(data);j++){
     void *ptr = &data[i+j];
     void *pespace = &espace[0];
@@ -88,24 +88,24 @@ int recois_envoie_message(int socketfd)
         continue;
       }
       if (ok==1){
-        nmb1 = atoi(&data[i+j]);
+        nmb1 = atof(&data[i+j]);
         ok+=1;
-        int tempo = nmb1;
-        while(tempo/10>0){
-          tempo = tempo/10;
+        int t =1;
+        while(*((char*)ptr+t)!=*((char*)pespace)){
+          t+=1;
           j+=1;
         }
         continue;
       }
       if (ok==2){
-        nmb2 = atoi(&data[i+j]);
+        nmb2 = atof(&data[i+j]);
         int nmb3 = atoi(&data[i+j-1]);
-        printf("nmb3 : %d\n",atoi(&data[i+j-3]));
-        printf("nmb3 : %d\n",atoi(&data[i+j-2]));
-        printf("nmb3 : %d\n",atoi(&data[i+j-1]));
-        printf("nmb3 : %d\n",atoi(&data[i+j]));
-        printf("nmb3 : %d\n",atoi(&data[i+j+1]));
-        printf("nmb3 : %d\n",atoi(&data[i+j+2]));
+        printf("nmb3 : %f\n",atof(&data[i+j-3]));
+        printf("nmb3 : %f\n",atof(&data[i+j-2]));
+        printf("nmb3 : %f\n",atof(&data[i+j-1]));
+        printf("nmb3 : %f\n",atof(&data[i+j]));
+        printf("nmb3 : %f\n",atof(&data[i+j+1]));
+        printf("nmb3 : %f\n",atof(&data[i+j+2]));
         printf("Message recu: %s\n", data);
         ok+=1;
       }
@@ -128,7 +128,7 @@ int recois_envoie_message(int socketfd)
     switch (op){
       case '+' :
       tempo = nmb1 + nmb2;
-      printf("tempo : %f nmb1 : %i nmb2 : %i \n",tempo,nmb1,nmb2);
+      printf("tempo : %f nmb1 : %f nmb2 : %f \n",tempo,nmb1,nmb2);
       sprintf(message,"%f",tempo);
       j = 1;
       while(tempo/10>0){
@@ -173,7 +173,7 @@ int recois_envoie_message(int socketfd)
       break;
 
       case '%' :
-      tempo = nmb1 % nmb2;
+      tempo = (int)nmb1 % (int)nmb2;
       printf("tempo : %f\n",tempo);
       sprintf(message,"%f",tempo);
       j = 1;

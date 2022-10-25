@@ -49,13 +49,13 @@ int moyenne_demande(int socketfd){
       if (&content!="\n"){strcat(message,&content);}
   }
   strcat(message," ");
-  printf("le premier 3 : %c\n",message[3]);
+  //printf("le premier 3 : %c\n",message[3]);
   close(fd);
   
 
   // on rajoute le deuxième nombre
-  for(int i=2;i<6;i++){
-    printf("le message pr l'instant : %s",message);
+  for(int i=3;i<6;i++){
+    //printf("le message pr l'instant : %s",message);
     memset((adresse+18),'\0',5);
     sprintf(adresse_tempo,"%d",i);
     strcat(adresse_tempo,".txt");
@@ -225,9 +225,9 @@ int main()
   }
 
   //appeler la fonction pour envoyer un message au serveur
-  //envoie_recois_message(socketfd);
+  envoie_recois_message(socketfd);
 
-  moyenne_demande(socketfd);
+  //moyenne_demande(socketfd);
 
   //close(socketfd);
   return 0;
