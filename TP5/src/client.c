@@ -93,32 +93,33 @@ int moyenne_demande(int socketfd){
       exit(EXIT_FAILURE);
     }
     // on lit la réponse
+    memset(data,'0',strlen(data));
+    printf("data[8] plus haut : %s\n",&data[8]);
     int read_status = read(socketfd, data, sizeof(data));
     if (read_status < 0)
     {
       perror("erreur lecture");
       return -1;
     }
-    printf("data : %s\n",data);
     // réarrange le message pour addition le prochain nombre
     memset(message,'\0',strlen(message));
     strcpy(message,"+ ");
-    strcat(message,&data[9]);
-    strcat(message,&data[10]);
-    strcat(message,&data[11]);
-    printf("message 3 fin for : %s\n",message);
+    strcat(message,&data[8]);
+    strcat(message," ");
   }
   memset(message,'\0',strlen(message));
   strcpy(message,"/ ");
-  strcat(message,data);
+  strcat(message,&data[8]);
   strcat(message," ");
   int j = 5;
   char tempo_div[1024];
+  memset(tempo_div,'0',strlen(tempo_div));
   sprintf(tempo_div,"%d",j);
   strcat(message,tempo_div);
   memset(data, 0, sizeof(data));
   strcpy(data, "calcul: ");
   strcat(data, message);
+  printf("message pour div : %s",data);
 
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
@@ -127,6 +128,7 @@ int moyenne_demande(int socketfd){
     exit(EXIT_FAILURE);
   }
   // on lit la réponse
+  memset(data, 0, sizeof(data));
   int read_status = read(socketfd, data, sizeof(data));
   if (read_status < 0)
   {
@@ -225,9 +227,9 @@ int main()
   }
 
   //appeler la fonction pour envoyer un message au serveur
-  envoie_recois_message(socketfd);
+  //envoie_recois_message(socketfd);
 
-  //moyenne_demande(socketfd);
+  moyenne_demande(socketfd);
 
   //close(socketfd);
   return 0;

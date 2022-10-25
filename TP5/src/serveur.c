@@ -116,7 +116,7 @@ int recois_envoie_message(int socketfd)
   char code[10];
   sscanf(data, "%s:", code);
 
-
+  memset(data,'0',1024);
   strcpy(data, "calcul: ");
 
   float tempo =0;
@@ -198,7 +198,8 @@ int recois_envoie_message(int socketfd)
   else{
     strcat(data, message2);
   }
-  
+  strcat(data,"\0");
+  printf("data envoye : %s\n",data);
   renvoie_message(client_socket_fd, data);
   
 
