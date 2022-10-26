@@ -65,19 +65,39 @@ void lire_dossier_recursif(char *repertoire){
     }
     printf("\n");
     closedir(dirp);
-    }
+}
 
 void lire_dossier_iteratif(char *repertoire){
-    DIR *dirp ;
-    struct dirent * ent;
+    printf("%s :\n",repertoire);
+	DIR *dirp = opendir(repertoire);
 
-    dirp = opendir(repertoire);
-    
     if (dirp == NULL){
         perror("opendir");
         //return(EXIT_FAILURE);
     }
-    
+
+	chdir(repertoire);
+	struct dirent *ent;
+
+	while(ent = readdir(dirp)){
+
+		if (strcmp(ent->d_name, ".") & strcmp(ent->d_name, "..")){
+			printf("%s \n", ent->d_name);
+
+			if (ent->d_type == 4){
+				DIR *dirp2 = opendir(ent->d_name);
+				struct dirent *ent2;
+
+				while(ent2 = readdir(dirp2)){
+
+					if (strcmp(ent2->d_name, ".") & strcmp(ent2->d_name, "..")){
+							printf("%s   ", ent2->d_name);
+				    }
+                }
+                printf("\n \n");
+			}
+		}
+	}	
 }
     
     
@@ -85,6 +105,7 @@ void lire_dossier_iteratif(char *repertoire){
 
 int main(){
     //lire_dossier(".");
-    lire_dossier_recursif("..");
+    //lire_dossier_recursif("..");
+    lire_dossier_iteratif("..");
     return(0);
 }
