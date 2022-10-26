@@ -19,6 +19,6 @@
  */
 int envoie_recois_message(int socketfd);
 
-int demande_moyenne(int socketfd);
+int envoie_operateur_numeros(int socketfd);
 
 #endif

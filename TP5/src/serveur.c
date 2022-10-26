@@ -68,8 +68,8 @@ int recois_envoie_message(int socketfd)
    * Les données envoyées par le client peuvent commencer par le mot "message :" ou un autre mot.
    */
   printf("Message recu: %s\n", data);
-  if ((&data[1]==&fin[1])&&(&data[2]==&fin[2])&&(&data[3]==&fin[3])){
-    printf("Je pars en week-end");
+  if (strcmp(&data[9],&fin[0])==3){
+    printf("Fin de journée pour moi \n");
     break;
   }
   int ok = 0;
@@ -99,14 +99,6 @@ int recois_envoie_message(int socketfd)
       }
       if (ok==2){
         nmb2 = atof(&data[i+j]);
-        int nmb3 = atoi(&data[i+j-1]);
-        printf("nmb3 : %f\n",atof(&data[i+j-3]));
-        printf("nmb3 : %f\n",atof(&data[i+j-2]));
-        printf("nmb3 : %f\n",atof(&data[i+j-1]));
-        printf("nmb3 : %f\n",atof(&data[i+j]));
-        printf("nmb3 : %f\n",atof(&data[i+j+1]));
-        printf("nmb3 : %f\n",atof(&data[i+j+2]));
-        printf("Message recu: %s\n", data);
         ok+=1;
       }
     }
@@ -128,7 +120,6 @@ int recois_envoie_message(int socketfd)
     switch (op){
       case '+' :
       tempo = nmb1 + nmb2;
-      printf("tempo : %f nmb1 : %f nmb2 : %f \n",tempo,nmb1,nmb2);
       sprintf(message,"%f",tempo);
       j = 1;
       while(tempo/10>0){
@@ -162,7 +153,6 @@ int recois_envoie_message(int socketfd)
 
       case '/' :
       tempo = (float)nmb1 / nmb2;
-      printf("tempo : %f\n",tempo);
       sprintf(message,"%f",tempo);
       j = 1;
       while(tempo/10>0){
@@ -174,7 +164,6 @@ int recois_envoie_message(int socketfd)
 
       case '%' :
       tempo = (int)nmb1 % (int)nmb2;
-      printf("tempo : %f\n",tempo);
       sprintf(message,"%f",tempo);
       j = 1;
       while(tempo/10>0){
@@ -199,7 +188,6 @@ int recois_envoie_message(int socketfd)
     strcat(data, message2);
   }
   strcat(data,"\0");
-  printf("data envoye : %s\n",data);
   renvoie_message(client_socket_fd, data);
   
 
