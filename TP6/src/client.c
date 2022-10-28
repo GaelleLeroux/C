@@ -16,17 +16,30 @@
 #include "client.h"
 #include "bmp.h"
 
-char *str = "[{\"code\": \"message\", \"valeurs\": [\"Salut à tous c'est Fanta\"]},{\"code\" : \"couleurs\",\"valeurs\" : [\"sunflower.bmp\",\"29\"]}]";
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-/*
- * Fonction d'envoi et de réception de messages
- * Il faut un argument : l'identifiant de la socket
- */
+int envoie_couleurs(int socketfd, char *pathname, char * nmb);
 
-void Lecture_JSON()
+
+char *str = "[{\"code\": \"message\", \"valeurs\": [\"Salut à tous c'est Fanta\"]},{\"code\": \"couleurs\",\"valeurs\": [\"images/sunflower.bmp\",\"29\"]}]";
+
+void Lecture_JSON(int socketfd)
 {
   long value;
+  char check[1024];
+  char temp[1024];
+  char mess[11]="\"message\"";
+  char coul[11]="\"couleurs\"";
+  char valeur_mess[1024];
+  char contenu[1024];
+  char valeur_coul1[1024];
+  char valeur_coul2[1024];
+  int ok =0;
+  char tempo_coul2[1024];
   while (str){
+    memset(valeur_mess,0,sizeof(valeur_mess));
     str = strstr(str, "\"code\"");
     if (str == NULL) {
             break;
@@ -36,27 +49,93 @@ void Lecture_JSON()
             break;
         }
     str++;
-    char tempo[1024];
-    memset(tempo, 0, sizeof(tempo));
-    while (*str != ','){
-      strcat(tempo, str);
+    str++;
+    memset(check, 0, sizeof(check));
+    while (*str != ',') {
+            memset(temp,0,sizeof(temp));
+            temp[0]=*str;
+            strcat(check, temp);
+            str++;
+        }
+
+    if (strcmp(mess,check)==0){
+      strcpy(valeur_mess, "message: ");
+      str = strstr(str, "\"valeurs\"");
+      str = strchr(str, ':');
+      str++;
+      str++;
+      str++;
+      memset(contenu, 0, sizeof(contenu));
+      while (*str != ']') {
+              memset(temp,0,sizeof(temp));
+              temp[0]=*str;
+              strcat(contenu, temp);
+              str++;
+          }
+      strcat(valeur_mess,contenu);
+      envoie_recois_message(socketfd,valeur_mess);
+
     }
-    printf("tempo : %s\n", tempo);
+    if (strcmp(&coul[0],&check[0])==0){
+      memset(valeur_coul1,0,sizeof(valeur_coul1));
+      memset(valeur_coul2,0,sizeof(valeur_coul2));
+      str = strstr(str, "\"valeurs\"");
+      str = strchr(str, ':');
+      str++;
+      str++;
+      str++;
+      
+      while(*str!=']') {
+        memset(contenu, 0, sizeof(contenu));
+        while((*str!=',') && (*str != ']') ){
+              memset(temp,0,sizeof(temp));
+              temp[0]=*str;
+              strcat(contenu, temp);
+              str++;
+          }
+        if (ok==0){
+          strcat(valeur_coul1,contenu);
+          str++;
+          ok+=1;
+        }
+        else{
+          strcat(valeur_coul2,contenu);  
+        }
+      }
+      printf("ar1 %c, ar2 %s\n",valeur_coul2[1],valeur_coul1);
+      int nmb = atoi(&valeur_coul2[1]);
+      printf("nmb : %d\n",nmb);
+      if (nmb<31){
+        printf("ar2 %s, ar1 %s\n",valeur_coul2,valeur_coul1);
+        memmove(valeur_coul1, valeur_coul1+1, strlen(valeur_coul1)-2);
+        valeur_coul1[strlen(valeur_coul1)-2]='\0';
+        //valeur_coul1[strlen(valeur_coul1)-1]="\0";
+        //memset(valeur_coul1,0,1);
+        printf("tempo2 : %s\n",valeur_coul1);
+        //printf("tempo2 : %s\n",valeur_coul1+1);
+        envoie_couleurs(socketfd,valeur_coul1,valeur_coul2);
+    }
+    
   }
 }
-int envoie_recois_message(int socketfd)
+}
+
+/*
+ * Fonction d'envoi et de réception de messages
+ * Il faut un argument : l'identifiant de la socket
+ */
+
+int envoie_recois_message(int socketfd,char *valeur_mess)
 {
 
   char data[1024];
   // la réinitialisation de l'ensemble des données
   memset(data, 0, sizeof(data));
 
+
   // Demandez à l'utilisateur d'entrer un message
-  char message[1024];
-  printf("Votre message (max 1000 caracteres): ");
-  fgets(message, sizeof(message), stdin);
-  strcpy(data, "message: ");
-  strcat(data, message);
+  
+  strcat(data, valeur_mess);
 
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
@@ -122,6 +201,7 @@ int envoie_couleurs(int socketfd, char *pathname, char * nmb)
   char data[1024];
   memset(data, 0, sizeof(data));
   int nmb2 = atoi(nmb);
+  printf("pathname : %s\n",pathname);
   analyse(pathname, data, nmb2, nmb);
 
   int write_status = write(socketfd, data, strlen(data));
@@ -134,17 +214,17 @@ int envoie_couleurs(int socketfd, char *pathname, char * nmb)
   return 0;
 }
 
-int main(int argc, char **argv)
+int main()
 {
   int socketfd;
 
   struct sockaddr_in server_addr;
 
-  if (argc < 2)
-  {
-    printf("usage: ./client chemin_bmp_image\n");
-    return (EXIT_FAILURE);
-  }
+  // if (argc < 2)
+  // {
+  //   printf("usage: ./client chemin_bmp_image\n");
+  //   return (EXIT_FAILURE);
+  // }
 
   /*
    * Creation d'une socket
@@ -169,23 +249,22 @@ int main(int argc, char **argv)
     perror("connection serveur");
     exit(EXIT_FAILURE);
   }
-  if (argc != 3)
-  {
+  Lecture_JSON(socketfd);
     // envoyer et recevoir un message
-    envoie_recois_message(socketfd);
-  }
-  else
-  {
-    // envoyer et recevoir les couleurs prédominantes
-    // d'une image au format BMP (argv[1])
-    int nmb = atoi(argv[2]);
-    if (nmb<31){
-    envoie_couleurs(socketfd, argv[1],argv[2]);
-    }
-    else{
-      printf("Nombre de couleur trop grand\n");
-    }
-  }
+    
+  // else
+  // {
+  //   // envoyer et recevoir les couleurs prédominantes
+  //   // d'une image au format BMP (argv[1])
+  //   int nmb = atoi(argv[2]);
+  //   if (nmb<31){
+  //   envoie_couleurs(socketfd, argv[1],argv[2]);
+  //   }
+  //   else{
+  //     printf("Nombre de couleur trop grand\n");
+  //   }
+  
 
   close(socketfd);
 }
+

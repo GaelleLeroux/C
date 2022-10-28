@@ -8,6 +8,8 @@ SOBJS ?= serveur.o
 SERVER = serveur
 CLIENT = client
 
+CFLAGS=-Wall -Wextra -g
+
 all: $(SERVER) $(CLIENT)
 
 $(SERVER): $(SOBJS)
@@ -17,5 +19,5 @@ $(CLIENT): $(COBJS)
 	$(CC) -o $(CLIENT) $(COBJS)
 
 .c.o: 
-	$(CC) -c $*.c
+	$(CC) -c $*.c $(CFLAGS)
 

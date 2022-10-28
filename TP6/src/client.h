@@ -17,6 +17,9 @@
  * Fonction d'envoi et de réception de messages
  * Il faut un argument : l'identifiant de la socket
  */
-int envoie_recois_message(int socketfd);
+void Lecture_JSON(int socketfd);
+
+int envoie_recois_message(int socketfd, char *valeur_mess);
+
 
 #endif
