@@ -58,22 +58,26 @@ int envoie_recois_message(int socketfd)
   return 0;
 }
 
-void analyse(char *pathname, char *data)
+void analyse(char *pathname, char *data, int nmb_int, char *nmb)
 {
   // compte de couleurs
   couleur_compteur *cc = analyse_bmp_image(pathname);
 
   int count;
   strcpy(data, "couleurs: ");
-  char temp_string[10] = "10,";
+  char temp_string[10] = "10" ;
   if (cc->size < 10)
   {
     sprintf(temp_string, "%d,", cc->size);
   }
-  strcat(data, temp_string);
+  char tempo[10];
+  memset(tempo,'0',strlen(tempo));
+  sprintf(tempo,"%d",nmb_int);
+  strcat(data,tempo);
+  strcat(data,",");
 
   // choisir 10 couleurs
-  for (count = 1; count < 11 && cc->size - count > 0; count++)
+  for (count = 1; count < nmb_int+1 && cc->size - count > 0; count++)
   {
     if (cc->compte_bit == BITS32)
     {
@@ -90,11 +94,12 @@ void analyse(char *pathname, char *data)
   data[strlen(data) - 1] = '\0';
 }
 
-int envoie_couleurs(int socketfd, char *pathname)
+int envoie_couleurs(int socketfd, char *pathname, char * nmb)
 {
   char data[1024];
   memset(data, 0, sizeof(data));
-  analyse(pathname, data);
+  int nmb2 = atoi(nmb);
+  analyse(pathname, data, nmb2, nmb);
 
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
@@ -141,7 +146,7 @@ int main(int argc, char **argv)
     perror("connection serveur");
     exit(EXIT_FAILURE);
   }
-  if (argc != 2)
+  if (argc != 3)
   {
     // envoyer et recevoir un message
     envoie_recois_message(socketfd);
@@ -150,7 +155,13 @@ int main(int argc, char **argv)
   {
     // envoyer et recevoir les couleurs prédominantes
     // d'une image au format BMP (argv[1])
-    envoie_couleurs(socketfd, argv[1]);
+    int nmb = atoi(argv[2]);
+    if (nmb<31){
+    envoie_couleurs(socketfd, argv[1],argv[2]);
+    }
+    else{
+      printf("Nombre de couleur trop grand\n");
+    }
   }
 
   close(socketfd);
