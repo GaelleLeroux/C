@@ -16,11 +16,34 @@
 #include "client.h"
 #include "bmp.h"
 
+char *str = "[{\"code\": \"message\", \"valeurs\": [\"Salut à tous c'est Fanta\"]},{\"code\" : \"couleurs\",\"valeurs\" : [\"sunflower.bmp\",\"29\"]}]";
+
 /*
  * Fonction d'envoi et de réception de messages
  * Il faut un argument : l'identifiant de la socket
  */
 
+void Lecture_JSON()
+{
+  long value;
+  while (str){
+    str = strstr(str, "\"code\"");
+    if (str == NULL) {
+            break;
+        }
+    str = strchr(str, ':');
+        if (str == NULL) {
+            break;
+        }
+    str++;
+    char tempo[1024];
+    memset(tempo, 0, sizeof(tempo));
+    while (*str != ','){
+      strcat(tempo, str);
+    }
+    printf("tempo : %s\n", tempo);
+  }
+}
 int envoie_recois_message(int socketfd)
 {
 
