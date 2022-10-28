@@ -20,7 +20,7 @@ void plot(char *data)
 {
 
   // Extraire le compteur et les couleurs RGB
-  FILE *p = popen("gnuplot -persist", "w");
+  FILE *p = fopen("gnuplot -persist", "w");
   printf("Plot\n");
   int count = 0;
   int n;
@@ -54,7 +54,7 @@ void plot(char *data)
   }
   fprintf(p, "e\n");
   printf("Plot: FIN\n");
-  pclose(p);
+  fclose(p);
 }
 
 /* renvoyer un message (*data) au client (client_socket_fd)
