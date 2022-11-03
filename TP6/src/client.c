@@ -169,12 +169,12 @@ int main(int argc, char **argv)
     perror("connection serveur");
     exit(EXIT_FAILURE);
   }
-  if (argc != 3)
+  if ((argc != 3) && (argc !=4))
   {
     // envoyer et recevoir un message
     envoie_recois_message(socketfd);
   }
-  else
+  if(argc==3)
   {
     // envoyer et recevoir les couleurs prédominantes
     // d'une image au format BMP (argv[1])
@@ -185,6 +185,9 @@ int main(int argc, char **argv)
     else{
       printf("Nombre de couleur trop grand\n");
     }
+  }
+  if (argc==4){
+    printf("oui");
   }
 
   close(socketfd);
