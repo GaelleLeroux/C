@@ -173,6 +173,9 @@ int recois_envoie_message(int socketfd)
         str++;
       }
     }
+    if (strcmp(mess,check)==0){
+      renvoie_message(client_socket_fd, data);
+    }
   }
 
   // Si le message commence par le mot: 'message:'
