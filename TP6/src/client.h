@@ -19,7 +19,7 @@
  */
 void Lecture_JSON(int socketfd);
 
-int envoie_recois_message(int socketfd, char *valeur_mess);
+int envoie_recois_message(int socketfd);
 
 
 #endif

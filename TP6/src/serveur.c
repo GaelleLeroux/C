@@ -109,15 +109,80 @@ int recois_envoie_message(int socketfd)
   printf("Message recu: %s\n", data);
   char code[10];
   sscanf(data, "%s", code);
+  /////////////////////////////////////////////
+  long value;
+  char check[1024];
+  char temp[1024];
+  char mess[11]="\"message\"";
+  char coul[11]="\"couleurs\"";
+  char valeur_mess[1024];
+  char contenu[1024];
+  char valeur_coul1[1024];
+  char valeur_coul2[1024];
+  int ok =0;
+  char tempo_coul2[1024];
+  char *str = data;
+  while (str){
+    memset(valeur_mess,0,sizeof(valeur_mess));
+    str = strstr(str, "\"code\"");
+    if (str == NULL) {
+            break;
+        }
+    str = strchr(str, ':');
+        if (str == NULL) {
+            break;
+        }
+    str++;
+    str++;
+    memset(check, 0, sizeof(check));
+    while (*str != ',') {
+            memset(temp,0,sizeof(temp));
+            temp[0]=*str;
+            strcat(check, temp);
+            str++;
+        }
+    if (strcmp(&coul[0],&check[0])==0){
+      char nmb_coul[100];
+      int fin_bou;
+      memset(nmb_coul,0,strlen(nmb_coul));
+      str = strstr(str, "\"valeurs\"");
+      str = strchr(str, ':');
+      str++;
+      str++;
+      str++;
+      str++;
+      temp[0]=*str;
+      str++;
+      temp[1]=*str;
+      strcat(nmb_coul,temp);
+      printf("nmb_coul : %s\n",nmb_coul);
+      fin_bou = atoi(nmb_coul);
+      str++;
+      str++;
+      str++;
+      str++;
+      for(int i=1;i<fin_bou+1;i++){
+        printf("%d : ",i);
+        while(*str!='\"'){
+          printf("%c",*str);
+          str++;
+        }
+        printf("\n");
+        str++;
+        str++;
+        str++;
+      }
+    }
+  }
 
   // Si le message commence par le mot: 'message:'
   if (strcmp(code, "message:") == 0)
   {
-    renvoie_message(client_socket_fd, data);
+    //renvoie_message(client_socket_fd, data);
   }
   else
   {
-    plot(data);
+    //plot(data);
   }
 
   // fermer le socket
