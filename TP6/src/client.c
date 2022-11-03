@@ -22,6 +22,60 @@
  * Fonction d'envoi et de réception de messages
  * Il faut un argument : l'identifiant de la socket
  */
+int envoie_calcul(int socketfd, char* op,char * nmb1, char* nmb2){
+  char data[1024];
+  memset(data,0,1024);
+  strcat(data,"[{\"code\": \"calcul\", \"valeurs\": [\"");
+  strcat(data,op);
+  strcat(data,"\",\"");
+  strcat(data,nmb1);
+  strcat(data,"\",\"");
+  strcat(data,nmb2);
+  strcat(data,"\"]}]");
+
+  int write_status = write(socketfd, data, strlen(data));
+  if (write_status < 0)
+  {
+    perror("erreur ecriture");
+    exit(EXIT_FAILURE);
+  }
+
+  // la réinitialisation de l'ensemble des données
+  memset(data, 0, sizeof(data));
+
+  // lire les données de la socket
+  int read_status = read(socketfd, data, sizeof(data));
+  printf("Message recus : %s\n",data);
+  if (read_status < 0)
+  {
+    perror("erreur lecture");
+    return -1;
+  }
+  char *str = data;
+  while(str){
+    str = strstr(str, "\"valeurs\"");
+    if (str == NULL) {
+            break;
+        }
+    str = strchr(str, ':');
+        if (str == NULL) {
+            break;
+        }
+    str++;
+    str++;
+    str++;
+    str++;
+    printf("Résultat : ");
+    while(*str!='\"'){
+      printf("%c",*str);
+      str++;
+    }
+    printf("\n");
+  }
+
+  return 0;
+}
+
 
 int envoie_recois_message(int socketfd)
 {
@@ -187,7 +241,7 @@ int main(int argc, char **argv)
     }
   }
   if (argc==4){
-    printf("oui");
+    envoie_calcul(socketfd,argv[1],argv[2],argv[3]);
   }
 
   close(socketfd);

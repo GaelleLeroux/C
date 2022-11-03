@@ -16,6 +16,7 @@
 
 #include "serveur.h"
 
+
 void plot(char *data)
 {
 
@@ -110,17 +111,13 @@ int recois_envoie_message(int socketfd)
   char code[10];
   sscanf(data, "%s", code);
   /////////////////////////////////////////////
-  long value;
+  char message[1024];
   char check[1024];
   char temp[1024];
   char mess[11]="\"message\"";
   char coul[11]="\"couleurs\"";
+  char cal[9]="\"calcul\"";
   char valeur_mess[1024];
-  char contenu[1024];
-  char valeur_coul1[1024];
-  char valeur_coul2[1024];
-  int ok =0;
-  char tempo_coul2[1024];
   char *str = data;
   while (str){
     memset(valeur_mess,0,sizeof(valeur_mess));
@@ -175,6 +172,54 @@ int recois_envoie_message(int socketfd)
     }
     if (strcmp(mess,check)==0){
       renvoie_message(client_socket_fd, data);
+    }
+    if (strcmp(check,cal)==0){
+      str = strstr(str, "\"valeurs\"");
+      str = strchr(str, ':');
+      str++;
+      str++;
+      str++;
+      str++;
+      char op= *str;
+      while(*str!=','){
+      str++;
+      }
+      str++;
+      str++;
+      float nmb1 = atof(str);
+      while(*str!=','){
+      str++;
+      }
+      str++;
+      str++;
+      float nmb2 = atof(str);
+      float sol = 0;
+      switch(op){
+        case '+' : 
+          sol = nmb1+nmb2;
+          break;
+        case '-':
+          sol = nmb1-nmb2;
+          break;
+        case '%':
+          sol = (float)nmb1/nmb2;
+          break;
+        case '*':
+          sol = nmb1*nmb2;
+          break;
+      }
+      memset(data,0,1024);
+      strcat(data,"[{\"code\": \"calcul\", \"valeurs\": [\"");
+      memset(message,0,1024);
+      sprintf(message,"%f",sol);
+      strcat(data,message);
+      strcat(data,"\"]}]");
+      int data_size = write(client_socket_fd, (void *)data, strlen(data));
+      if (data_size < 0)
+      {
+        perror("erreur ecriture");
+        return (EXIT_FAILURE);
+      }
     }
   }
 

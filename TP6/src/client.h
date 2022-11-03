@@ -21,5 +21,7 @@ void Lecture_JSON(int socketfd);
 
 int envoie_recois_message(int socketfd);
 
+int envoie_calcul(int socketfd, char* op,char * nmb1, char* nmb2);
+
 
 #endif
