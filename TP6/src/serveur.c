@@ -223,16 +223,6 @@ int recois_envoie_message(int socketfd)
     }
   }
 
-  // Si le message commence par le mot: 'message:'
-  if (strcmp(code, "message:") == 0)
-  {
-    //renvoie_message(client_socket_fd, data);
-  }
-  else
-  {
-    //plot(data);
-  }
-
   // fermer le socket
   close(socketfd);
   return (EXIT_SUCCESS);
