@@ -1,4 +1,11 @@
-
+/*
+* Nom de fichier : client.c
+* Objectifs : Envoyer les données entrées par l'utilisateur au serveur.
+*             En fonction des données, le programme doit reconnaître tout seul
+*             si l'utilisateur souhaite envoyer un message, faire un calcul, ou
+*             connaître les couleurs prédominantes d'une image.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+*/
 
 /*
  * SPDX-FileCopyrightText: 2021 John Samuel
@@ -23,6 +30,7 @@
  * Il faut un argument : l'identifiant de la socket
  */
 int envoie_calcul(int socketfd, char* op,char * nmb1, char* nmb2){
+  // On rassemble les données sous format JSON
   char data[1024];
   memset(data,0,1024);
   strcat(data,"[{\"code\": \"calcul\", \"valeurs\": [\"");
@@ -77,14 +85,12 @@ int envoie_calcul(int socketfd, char* op,char * nmb1, char* nmb2){
 }
 
 
-int envoie_recois_message(int socketfd)
-{
-
+int envoie_recois_message(int socketfd){
   char data[1024];
   // la réinitialisation de l'ensemble des données
   memset(data, 0, sizeof(data));
 
-  // Demandez à l'utilisateur d'entrer un message
+  // Demander à l'utilisateur d'entrer un message
   char message[1024];
   memset(message,'0',1024);
   printf("Votre message (max 1000 caracteres): ");
@@ -129,8 +135,7 @@ int envoie_recois_message(int socketfd)
   return 0;
 }
 
-void analyse(char *pathname, char *data, int nmb_int, char *nmb)
-{
+void analyse(char *pathname, char *data, int nmb_int){
   // compte de couleurs
   couleur_compteur *cc = analyse_bmp_image(pathname);
 
@@ -140,11 +145,12 @@ void analyse(char *pathname, char *data, int nmb_int, char *nmb)
   {
     sprintf(temp_string, "%d,", cc->size);
   }
-  char tempo[10];
-  memset(tempo,'0',strlen(tempo));
-  sprintf(tempo,"%d",nmb_int);
+  // On rassemble les données sous format JSON
+  char nmb_char[10];
+  memset(nmb_char,'0',strlen(nmb_char));
+  sprintf(nmb_char,"%d",nmb_int);
   strcat(data,"[{\"code\": \"couleurs\", \"valeurs\": [\"");
-  strcat(data,tempo);
+  strcat(data,nmb_char);
   strcat(data,"\",\"");
 
 
@@ -163,7 +169,7 @@ void analyse(char *pathname, char *data, int nmb_int, char *nmb)
     strcat(data,"\",\"");
   }
 
-  // enlever le dernier virgule
+  // enlever la dernière virgule
   data[strlen(data) - 1] = '\0';
   data[strlen(data) - 2] = '\0';
   strcat(data,"\"]}]");
@@ -173,10 +179,12 @@ void analyse(char *pathname, char *data, int nmb_int, char *nmb)
 
 int envoie_couleurs(int socketfd, char *pathname, char * nmb)
 {
+  // Initialisation avant l'analyse
   char data[1024];
   memset(data, 0, sizeof(data));
-  int nmb2 = atoi(nmb);
-  analyse(pathname, data, nmb2, nmb);
+  int nmb_int = atoi(nmb);
+
+  analyse(pathname, data, nmb_int);
 
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
@@ -194,6 +202,7 @@ int main(int argc, char **argv)
 
   struct sockaddr_in server_addr;
 
+  // Cas 1 : le client ne met aucun argument, la fonction renvoie donc une erreur
   if (argc < 2)
   {
     printf("usage: ./client chemin_bmp_image\n");
@@ -223,11 +232,18 @@ int main(int argc, char **argv)
     perror("connection serveur");
     exit(EXIT_FAILURE);
   }
+
+  /* Cas 2 :
+  *  Par élimination : Si le client ne veut pas recevoir les couleurs prédominantes
+  *  ni réaliser un calcul, alors il veut forcément écrire un message.
+  */
   if ((argc != 3) && (argc !=4))
   {
     // envoyer et recevoir un message
     envoie_recois_message(socketfd);
   }
+
+  // Cas 3 : le client veut recevoir les couleurs prédominantes d'une image
   if(argc==3)
   {
     // envoyer et recevoir les couleurs prédominantes
@@ -240,6 +256,8 @@ int main(int argc, char **argv)
       printf("Nombre de couleur trop grand\n");
     }
   }
+
+  // Cas 4 : le client veut réaliser un calcul
   if (argc==4){
     envoie_calcul(socketfd,argv[1],argv[2],argv[3]);
   }

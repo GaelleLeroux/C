@@ -1,3 +1,10 @@
+/*
+* Nom de fichier : calcule.c
+* Objectifs : Réaliser un calcul en utilisant les informations que l'utilisateur a entré
+              dans le terminal, à l'aide de argc et argv.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+*/
+
 # include <stdio.h>
 # include <stdlib.h>
 # include "operator.h"
