@@ -31,6 +31,7 @@ int message(int socketfd){
   strcpy(data, "message: ");
   strcat(data, message);
 
+  // Envoie le message au serveur
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
   {
@@ -49,15 +50,16 @@ int message(int socketfd){
     return -1;
   }
 
+  // Affiche le message recus
   printf("Message recu: %s\n", data);
 
   return 0;
 }
 
 int envoie_operateur_numeros(int socketfd){
-  char data[1024];
-  char message[1024];
-  char classe[1024];
+  char data[1024]; // string qui sera envoyé au serveur
+  char message[1024]; // string qui aidera a créer le message dans data
+  char classe[1024]; // variable qui contiendra la moyenne de la classe
   memset(classe,0,strlen(classe));
   strcpy(classe,"+ 0 ");
   char content;
@@ -65,64 +67,107 @@ int envoie_operateur_numeros(int socketfd){
   char nul = '\0';
   void *ctr = &content;
   void *nultr = &nul;
-  // la réinitialisation de l'ensemble des données
-  for (int etu=1;etu<6;etu++){
-  memset(data, 0, sizeof(data));
-  char adresse_tempo[1024];
-  sprintf(adresse_tempo,"%d",etu);
-  char adresse[1024];
-  memset(adresse,0,strlen(adresse));
-  strcpy(adresse,"../etudiant/");
-  strcat(adresse,adresse_tempo);
-  strcat(adresse,"/note");
-  memset(message,0,strlen(message));
-  strcpy(message,"+ ");
-  memset((adresse+18),'\0',5);
-  // Initialisation premier nombre du message
-  int i =1;
-  sprintf(adresse_tempo,"%d",i);
-  strcat(adresse_tempo,".txt");
-  strcat(adresse,adresse_tempo);
-  memset(&content,0,sizeof(content));
-  fd = open(adresse,O_RDONLY);
-  for(int k=0;k<2;k++){
-      size = read(fd,&content,1);
-      if (size<1){
-          break;
-      }
-      *((char *)ctr+1) = *((char*)nultr);
-      if (&content!="\n"){strcat(message,&content);}
-  }
-  strcat(message," ");
-  close(fd);
-  
 
-  // on rajoute le deuxième nombre
-  for(int i=2;i<6;i++){
-    //printf("le message pr l'instant : %s",message);
-    memset((adresse+18),'\0',5);
+  for (int etu=1;etu<6;etu++){ // on parcours tous les étudiants
+    memset(data, 0, sizeof(data)); // on vide data
+    char adresse_tempo[1024]; // string qui aide à la création du contenu de adresse
+    sprintf(adresse_tempo,"%d",etu);
+    char adresse[1024]; // string qui contiendra l'adresse du fichier à lire
+    memset(adresse,0,strlen(adresse));
+    strcpy(adresse,"../etudiant/");
+    strcat(adresse,adresse_tempo);
+    strcat(adresse,"/note"); // a la fin de cette ligne adresse vaut : "../etudiantX/note"
+                             // avec X le numéro de l'étudiant
+    memset(message,0,strlen(message));
+    strcpy(message,"+ "); // on commence à créer une partie du message à envoyée
+    memset((adresse+18),'\0',5); // ont supprime tous ce qu'il y a dans adresse après ce que l'ont a déjà écrit dedans
+
+    // Initialisation premier nombre du message
+    int i =1;
     sprintf(adresse_tempo,"%d",i);
     strcat(adresse_tempo,".txt");
-    strcat(adresse,adresse_tempo);
-    char content;
-    int fd, count, size;
-    fd = open(adresse,O_RDONLY);
-    for(int k=0;k<2;k++){
+    strcat(adresse,adresse_tempo); // a la fin de cette ligne adresse vaut : "../etudiantX/note1.txt"
+    memset(&content,0,sizeof(content));
+    fd = open(adresse,O_RDONLY); // on ouvre le fichier
+    for(int k=0;k<2;k++){ // ont lit les 2 premiers caractères car les notes sont composée de maximum 2 chiffres
       size = read(fd,&content,1);
       if (size<1){
           break;
       }
-      if (&content!="\0"){strcat(message,&content);
-      message[strlen(message)-1]= '\0';
+      // Lors de la lecture du fichier nous lisons un caractère illisible
+      *((char *)ctr+1) = *((char*)nultr); // force le dernier caractère à null
+      if (&content!="\n"){
+        strcat(message,&content);
       }
-  }
+    }
     strcat(message," ");
     close(fd);
+    
+
+    // on rajoute le deuxième nombre
+    for(int i=2;i<6;i++){
+      memset((adresse+18),'\0',5); // on met a 0 tous ce qui a après "../etudiantX/note"
+      sprintf(adresse_tempo,"%d",i);
+      strcat(adresse_tempo,".txt");
+      strcat(adresse,adresse_tempo);// a la fin de cette ligne adresse vaut : "../etudiantX/noteI.txt"
+                                    // avec I le fichier à lire
+      char content;
+      int fd, count, size;
+      fd = open(adresse,O_RDONLY);
+      for(int k=0;k<2;k++){ 
+        size = read(fd,&content,1);
+        if (size<1){
+            break;
+        }
+        if (&content!="\0"){
+          strcat(message,&content);
+          // Lors de la lecture du fichier nous lisons un caractère illisible
+          message[strlen(message)-1]= '\0'; // Nous forçons le dernier caractère illisible à null
+        }
+      }
+      strcat(message," "); // a la fin de cette ligne message vaut : "+ nmb1 nmb2"
+      // avec nmb1 et nmb2 les 2 nombres à additionner.
+      close(fd);
+      // Création du message data
+      memset(data, 0, sizeof(data));
+      strcpy(data, "calcul: ");
+      strcat(data, message);
+
+      // on l'envoie au serveur
+      int write_status = write(socketfd, data, strlen(data));
+      if (write_status < 0)
+      {
+        perror("erreur ecriture");
+        exit(EXIT_FAILURE);
+      }
+      // on lit la réponse
+      memset(data,'0',strlen(data));
+      int read_status = read(socketfd, data, sizeof(data));
+      if (read_status < 0)
+      {
+        perror("erreur lecture");
+        return -1;
+      }
+      // réarrange le message pour addition le prochain nombre
+      memset(message,'\0',strlen(message));
+      strcpy(message,"+ ");
+      strcat(message,&data[8]); // ont lit la réponse de l'addition et ont le met dans message
+      strcat(message," ");
+    }
+    // réarrange message pour la division et donc le calcul de la moyenne
+    memset(message,'\0',strlen(message));
+    strcpy(message,"/ ");
+    strcat(message,&data[8]);
+    strcat(message," ");
+    int j = 5;
+    char tempo_div[1024];
+    memset(tempo_div,'0',strlen(tempo_div));
+    sprintf(tempo_div,"%d",j);
+    strcat(message,tempo_div);
     memset(data, 0, sizeof(data));
     strcpy(data, "calcul: ");
-    strcat(data, message);
+    strcat(data, message); // A la fin de cette ligne data vaut : ""
 
-    // on l'envoie au serveur
     int write_status = write(socketfd, data, strlen(data));
     if (write_status < 0)
     {
@@ -130,76 +175,43 @@ int envoie_operateur_numeros(int socketfd){
       exit(EXIT_FAILURE);
     }
     // on lit la réponse
-    memset(data,'0',strlen(data));
+    memset(data, 0, sizeof(data));
     int read_status = read(socketfd, data, sizeof(data));
     if (read_status < 0)
     {
       perror("erreur lecture");
       return -1;
     }
-    // réarrange le message pour addition le prochain nombre
+
+    printf("Moyenne eleve %d: %s\n",etu, &data[8]);
     memset(message,'\0',strlen(message));
-    strcpy(message,"+ ");
-    strcat(message,&data[8]);
-    strcat(message," ");
-  }
-  memset(message,'\0',strlen(message));
-  strcpy(message,"/ ");
-  strcat(message,&data[8]);
-  strcat(message," ");
-  int j = 5;
-  char tempo_div[1024];
-  memset(tempo_div,'0',strlen(tempo_div));
-  sprintf(tempo_div,"%d",j);
-  strcat(message,tempo_div);
-  memset(data, 0, sizeof(data));
-  strcpy(data, "calcul: ");
-  strcat(data, message);
 
-  int write_status = write(socketfd, data, strlen(data));
-  if (write_status < 0)
-  {
-    perror("erreur ecriture");
-    exit(EXIT_FAILURE);
-  }
-  // on lit la réponse
-  memset(data, 0, sizeof(data));
-  int read_status = read(socketfd, data, sizeof(data));
-  if (read_status < 0)
-  {
-    perror("erreur lecture");
-    return -1;
-  }
+    // moyenne de la classe
+    strcat(classe,&data[8]);
+    memset(data, 0, sizeof(data));
+    strcpy(data, "calcul: ");
+    strcat(data, classe);
 
-  printf("Moyenne eleve %d: %s\n",etu, &data[8]);
-  memset(message,'\0',strlen(message));
+    // on ecrit pour la somme de la moyenne de la classe
+    write_status = write(socketfd, data, strlen(data));
+    if (write_status < 0)
+    {
+      perror("erreur ecriture");
+      exit(EXIT_FAILURE);
+    }
 
-  // moyenne de la classe
-  strcat(classe,&data[8]);
-  memset(data, 0, sizeof(data));
-  strcpy(data, "calcul: ");
-  strcat(data, classe);
-
-  // on ecrit pour la somme de la moyenne de la classe
-  write_status = write(socketfd, data, strlen(data));
-  if (write_status < 0)
-  {
-    perror("erreur ecriture");
-    exit(EXIT_FAILURE);
-  }
-
-  // on lit la réponse pour la moyenne de la classe
-  memset(data, 0, sizeof(data));
-  read_status = read(socketfd, data, sizeof(data));
-  if (read_status < 0)
-  {
-    perror("erreur lecture");
-    return -1;
-  }
-  memset(classe, 0,strlen(classe));
-  strcpy(classe,"+ ");
-  strcat(classe,&data[8]);
-  strcat(classe," ");
+    // on lit la réponse pour la moyenne de la classe
+    memset(data, 0, sizeof(data));
+    read_status = read(socketfd, data, sizeof(data));
+    if (read_status < 0)
+    {
+      perror("erreur lecture");
+      return -1;
+    }
+    memset(classe, 0,strlen(classe));
+    strcpy(classe,"+ ");
+    strcat(classe,&data[8]);
+    strcat(classe," ");
 
 
   }
