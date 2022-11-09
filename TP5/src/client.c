@@ -19,6 +19,40 @@
 
 #include "client.h"
 
+int message(int socketfd){
+  char data[1024];
+  // la réinitialisation de l'ensemble des données
+  memset(data, 0, sizeof(data));
+
+  // Demandez à l'utilisateur d'entrer un message
+  char message[1024];
+  printf("Votre message (max 1000 caracteres): ");
+  fgets(message, sizeof(message), stdin);
+  strcpy(data, "message: ");
+  strcat(data, message);
+
+  int write_status = write(socketfd, data, strlen(data));
+  if (write_status < 0)
+  {
+    perror("erreur ecriture");
+    exit(EXIT_FAILURE);
+  }
+
+  // la réinitialisation de l'ensemble des données
+  memset(data, 0, sizeof(data));
+
+  // lire les données de la socket
+  int read_status = read(socketfd, data, sizeof(data));
+  if (read_status < 0)
+  {
+    perror("erreur lecture");
+    return -1;
+  }
+
+  printf("Message recu: %s\n", data);
+
+  return 0;
+}
 
 int envoie_operateur_numeros(int socketfd){
   char data[1024];
@@ -285,10 +319,17 @@ int main()
   }
 
   //appeler la fonction pour envoyer un message au serveur
-  //envoie_recois_message(socketfd);
+  printf("Exercice 5.4\n");
+  message(socketfd);
 
+  printf("Exercice 5.5\n");
+  char diviser = '%';
+  printf("Opérateurs disponible : + * - / %c \n",diviser);
+  envoie_recois_message(socketfd);
+
+  printf("\n");
+  printf("Exercice 5.6\n");
   envoie_operateur_numeros(socketfd);
 
-  //close(socketfd);
   return 0;
 }

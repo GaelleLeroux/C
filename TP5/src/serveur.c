@@ -49,6 +49,11 @@ int recois_envoie_message(int socketfd)
     return (EXIT_FAILURE);
   }
   char fin[4]="fin";
+  char code[10];
+  char reponse[1024];
+  memset(reponse,'0',1024);
+
+  
 
   while(1){
   // la réinitialisation de l'ensemble des données
@@ -63,133 +68,150 @@ int recois_envoie_message(int socketfd)
     return (EXIT_FAILURE);
   }
 
+  
+
   /*
    * extraire le code des données envoyées par le client.
    * Les données envoyées par le client peuvent commencer par le mot "message :" ou un autre mot.
    */
-  printf("Message recu: %s\n", data);
   if (strcmp(&data[9],&fin[0])==3){
     printf("Fin de journée pour moi \n");
     break;
   }
-  int ok = 0;
-  int i = 8;
-  char op;
-  char espace[1]=" ";
-  float nmb1;
-  float nmb2;
-  for (int j=0;(i+j)<strlen(data);j++){
-    void *ptr = &data[i+j];
-    void *pespace = &espace[0];
-    if (*((char*)ptr)!=*((char*)pespace)){
-      if (ok==0){
-        op = data[i+j];
-        ok+=1;
-        continue;
-      }
-      if (ok==1){
-        nmb1 = atof(&data[i+j]);
-        ok+=1;
-        int t =1;
-        while(*((char*)ptr+t)!=*((char*)pespace)){
-          t+=1;
-          j+=1;
-        }
-        continue;
-      }
-      if (ok==2){
-        nmb2 = atof(&data[i+j]);
-        ok+=1;
-      }
-    }
-    }
 
-  
-  char code[10];
+  memset(code,'0',10);
   sscanf(data, "%s:", code);
+  //printf("code :%s\n",code );
+  // Si le message commence par le mot: 'message:'
+  if (strcmp(code, "message:") == 0){
+    printf("Votre réponse (max 1000 caracteres): ");
+    fgets(reponse, sizeof(reponse), stdin);
+    strcpy(data, "message: ");
+    strcat(data, reponse);
 
-  memset(data,'0',1024);
-  strcpy(data, "calcul: ");
+    renvoie_message(client_socket_fd, data);
+  }
 
-  float tempo =0;
-  int j=1;
-  int m = 0;
-  char message[1024];
 
-  if (ok==3){
-    switch (op){
-      case '+' :
-      tempo = nmb1 + nmb2;
-      sprintf(message,"%f",tempo);
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
+  if(strcmp(code,"calcul:")==0){
+    int ok = 0;
+    int i = 8;
+    char op;
+    char espace[1]=" ";
+    float nmb1;
+    float nmb2;
+    for (int j=0;(i+j)<strlen(data);j++){
+      void *ptr = &data[i+j];
+      void *pespace = &espace[0];
+      if (*((char*)ptr)!=*((char*)pespace)){
+        if (ok==0){
+          op = data[i+j];
+          ok+=1;
+          continue;
         }
-      m+=1;
-      break;
-
-      case '-' :
-      tempo = nmb1 - nmb2;
-      sprintf(message,"%f",tempo);
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
+        if (ok==1){
+          nmb1 = atof(&data[i+j]);
+          ok+=1;
+          int t =1;
+          while(*((char*)ptr+t)!=*((char*)pespace)){
+            t+=1;
+            j+=1;
+          }
+          continue;
         }
-      m+=1;
-      break;
-
-      case '*' :
-      tempo = nmb1 * nmb2;
-      sprintf(message,"%f",tempo);
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
+        if (ok==2){
+          nmb2 = atof(&data[i+j]);
+          ok+=1;
         }
-      m+=1;
-      break;
+      }
+      }
 
-      case '/' :
-      tempo = (float)nmb1 / nmb2;
-      sprintf(message,"%f",tempo);
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
-        }
-      m+=1;
-      break;
-
-      case '%' :
-      tempo = (int)nmb1 % (int)nmb2;
-      sprintf(message,"%f",tempo);
-      j = 1;
-      while(tempo/10>0){
-          tempo = tempo/10;
-          j+=1;
-        }
-      m+=1;
-      break;
-    }
     
-  }
+    char code[10];
+    sscanf(data, "%s:", code);
 
-  char message2[15] = "Mauvais calcul";
+    memset(data,'0',1024);
+    strcpy(data, "calcul: ");
 
-  void *pmes =&message[0];
-  *((char*)pmes+j)='\0';
+    float tempo =0;
+    int j=1;
+    int m = 0;
+    char message[1024];
 
-  if (m==1){
-  strcat(data, message);
+    if (ok==3){
+      switch (op){
+        case '+' :
+        tempo = nmb1 + nmb2;
+        sprintf(message,"%f",tempo);
+        j = 1;
+        while(tempo/10>0){
+            tempo = tempo/10;
+            j+=1;
+          }
+        m+=1;
+        break;
+
+        case '-' :
+        tempo = nmb1 - nmb2;
+        sprintf(message,"%f",tempo);
+        j = 1;
+        while(tempo/10>0){
+            tempo = tempo/10;
+            j+=1;
+          }
+        m+=1;
+        break;
+
+        case '*' :
+        tempo = nmb1 * nmb2;
+        sprintf(message,"%f",tempo);
+        j = 1;
+        while(tempo/10>0){
+            tempo = tempo/10;
+            j+=1;
+          }
+        m+=1;
+        break;
+
+        case '/' :
+        tempo = (float)nmb1 / nmb2;
+        sprintf(message,"%f",tempo);
+        j = 1;
+        while(tempo/10>0){
+            tempo = tempo/10;
+            j+=1;
+          }
+        m+=1;
+        break;
+
+        case '%' :
+        tempo = (int)nmb1 % (int)nmb2;
+        sprintf(message,"%f",tempo);
+        j = 1;
+        while(tempo/10>0){
+            tempo = tempo/10;
+            j+=1;
+          }
+        m+=1;
+        break;
+      }
+      
+    }
+
+    char message2[15] = "Mauvais calcul";
+
+    void *pmes =&message[0];
+    *((char*)pmes+j)='\0';
+
+    if (m==1){
+    strcat(data, message);
+    }
+    else{
+      strcat(data, message2);
+    }
+    strcat(data,"\0");
+    renvoie_message(client_socket_fd, data);
   }
-  else{
-    strcat(data, message2);
-  }
-  strcat(data,"\0");
-  renvoie_message(client_socket_fd, data);
-  
 
   
   

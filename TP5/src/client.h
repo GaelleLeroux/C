@@ -17,6 +17,8 @@
  * Fonction d'envoi et de réception de messages
  * Il faut un argument : l'identifiant de la socket
  */
+int message(int socketfd);
+
 int envoie_recois_message(int socketfd);
 
 int envoie_operateur_numeros(int socketfd);
