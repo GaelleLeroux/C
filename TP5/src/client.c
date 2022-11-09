@@ -1,9 +1,11 @@
 /*
- * SPDX-FileCopyrightText: 2021 John Samuel
- *
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- */
+* Nom de fichier : client.c
+* Objectifs : - Exercice 5.4 : Permettre à l'utilisateur d'envoyer un message au serveur et de répondre sur celui ci
+*             - Exercice 5.5 : Permettre à l'utilisateur d'envoyer un calcul au serveur et obtenir la réponse du calcul sur client
+              - Exercice 5.6 : Calculer la moyenne de chaque élève et la moyenne de la classe à partir de fichiers
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+*/
+
 
 #include <string.h>
 #include <stdio.h>
@@ -166,8 +168,10 @@ int envoie_operateur_numeros(int socketfd){
     strcat(message,tempo_div);
     memset(data, 0, sizeof(data));
     strcpy(data, "calcul: ");
-    strcat(data, message); // A la fin de cette ligne data vaut : ""
+    strcat(data, message); // A la fin de cette ligne data vaut : "calcul: / nmb1 5"
+    // avec nmb1 la somme des notes de l'élève
 
+    // on envoie au serveur
     int write_status = write(socketfd, data, strlen(data));
     if (write_status < 0)
     {
@@ -190,9 +194,10 @@ int envoie_operateur_numeros(int socketfd){
     strcat(classe,&data[8]);
     memset(data, 0, sizeof(data));
     strcpy(data, "calcul: ");
-    strcat(data, classe);
+    strcat(data, classe); // a la fin de cette ligne data vaut : "calcul: + nmb1 nmb2"
+    // avec nmb1 la somme de toutes les moyennes des élèves déjà sommée et nmb2 la nouvelle moyenne du dernier élève calculé
 
-    // on ecrit pour la somme de la moyenne de la classe
+    // on envoie au serveur
     write_status = write(socketfd, data, strlen(data));
     if (write_status < 0)
     {
@@ -208,10 +213,12 @@ int envoie_operateur_numeros(int socketfd){
       perror("erreur lecture");
       return -1;
     }
+    // on réarrange réponse
     memset(classe, 0,strlen(classe));
     strcpy(classe,"+ ");
     strcat(classe,&data[8]);
-    strcat(classe," ");
+    strcat(classe," "); // a la fin de cette ligne classe vaut : "+ nmb1"
+    // avec nmb1 la somme de toutes les moyennes des élèves déjà calculé
 
 
   }
@@ -220,9 +227,9 @@ int envoie_operateur_numeros(int socketfd){
   memset(data, 0, sizeof(data));
   strcpy(data, "calcul: / ");
   strcat(data, classe);
-  strcat(data," 5");
+  strcat(data," 5"); // a la fin de cette ligne data vaut : "/ nmb1 5"
 
-  // on ecrit pour la division de la moyenne de la classe
+  // on ecrit pour la division de la somme des moyennes des élèves et ainsi calculé la moyenne de la classe
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
   {
@@ -241,6 +248,7 @@ int envoie_operateur_numeros(int socketfd){
 
   printf("Moyenne classe: %s\n", &data[8]);
   memset(message,'\0',strlen(message));
+  // On envoie le message "fin" au serveur afin que celui ci s'arrête
   strcpy(message,"fin");
   memset(data, 0, strlen(data));
   strcpy(data, "calcul: ");
@@ -258,11 +266,6 @@ int envoie_operateur_numeros(int socketfd){
 
 }
 
-/*
- * Fonction d'envoi et de réception de messages
- * Il faut un argument : l'identifiant de la socket
- */
-
 int envoie_recois_message(int socketfd)
 {
 
@@ -274,9 +277,11 @@ int envoie_recois_message(int socketfd)
   char message[1024];
   printf("Votre calcul (une lettre est considérée comme valant 0): ");
   fgets(message, sizeof(message), stdin);
+  // Créer le message data à envoyer au serveur avec le calcul voulue par l'utilisateur
   strcpy(data, "calcul: ");
-  strcat(data, message);
+  strcat(data, message); 
 
+  // envoie le message au serveur
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
   {
@@ -295,6 +300,7 @@ int envoie_recois_message(int socketfd)
     return -1;
   }
 
+  // Affiche le message reçus
   printf("Message recu: %s\n", data);
 
   return 0;

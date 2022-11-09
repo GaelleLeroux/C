@@ -1,9 +1,10 @@
 /*
- * SPDX-FileCopyrightText: 2021 John Samuel
- *
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- */
+* Nom de fichier : client.c
+* Objectifs : - Exercice 5.4 : Permettre à l'utilisateur d'envoyer un message au serveur et de répondre sur celui ci
+*             - Exercice 5.5 : Permettre à l'utilisateur d'envoyer un calcul au serveur et obtenir la réponse du calcul sur client
+              - Exercice 5.6 : Calculer la moyenne de chaque élève et la moyenne de la classe à partir de fichiers
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+*/
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -48,7 +49,7 @@ int recois_envoie_message(int socketfd)
     perror("accept");
     return (EXIT_FAILURE);
   }
-  char fin[4]="fin";
+  char fin[4]="fin"; 
   char code[10];
   char reponse[1024];
   memset(reponse,'0',1024);
@@ -74,25 +75,25 @@ int recois_envoie_message(int socketfd)
    * extraire le code des données envoyées par le client.
    * Les données envoyées par le client peuvent commencer par le mot "message :" ou un autre mot.
    */
-  if (strcmp(&data[9],&fin[0])==3){
+  if (strcmp(&data[9],&fin[0])==3){ // Si le serveur a reçu "fin" cela veut dire qu'il doit sortir de la boucle
     printf("Fin de journée pour moi \n");
     break;
   }
 
   memset(code,'0',10);
   sscanf(data, "%s:", code);
-  //printf("code :%s\n",code );
+  
   // Si le message commence par le mot: 'message:'
   if (strcmp(code, "message:") == 0){
+    // on remplit data avec la réponse de l'utilisateur et on la renvoie au client
     printf("Votre réponse (max 1000 caracteres): ");
     fgets(reponse, sizeof(reponse), stdin);
     strcpy(data, "message: ");
     strcat(data, reponse);
-
     renvoie_message(client_socket_fd, data);
   }
 
-
+  // Si le message commence par le mot: 'calcul:'
   if(strcmp(code,"calcul:")==0){
     int ok = 0;
     int i = 8;
@@ -100,26 +101,26 @@ int recois_envoie_message(int socketfd)
     char espace[1]=" ";
     float nmb1;
     float nmb2;
-    for (int j=0;(i+j)<strlen(data);j++){
+    for (int j=0;(i+j)<strlen(data);j++){ // On lit le message data
       void *ptr = &data[i+j];
       void *pespace = &espace[0];
-      if (*((char*)ptr)!=*((char*)pespace)){
-        if (ok==0){
+      if (*((char*)ptr)!=*((char*)pespace)){ // Si le caractère de date est différent d'un espace
+        if (ok==0){ // Si ok vaut 0 cela veut dire que nous somme sur l'opérateur
           op = data[i+j];
           ok+=1;
           continue;
         }
-        if (ok==1){
-          nmb1 = atof(&data[i+j]);
+        if (ok==1){ // Si ok vaut 1 cela veut dire que nous somme sur le premier nombre
+          nmb1 = atof(&data[i+j]); // on le transforme en float
           ok+=1;
           int t =1;
-          while(*((char*)ptr+t)!=*((char*)pespace)){
+          while(*((char*)ptr+t)!=*((char*)pespace)){ // on avance le pointeur de la taille du nombre qu'on vient de transformer en float
             t+=1;
             j+=1;
           }
           continue;
         }
-        if (ok==2){
+        if (ok==2){ // Si ok vaut 2 cela veut dire que nous somme sur le deuxième nombre
           nmb2 = atof(&data[i+j]);
           ok+=1;
         }
@@ -138,11 +139,11 @@ int recois_envoie_message(int socketfd)
     int m = 0;
     char message[1024];
 
-    if (ok==3){
-      switch (op){
+    if (ok==3){ // Si ok vaut 3 cela veut dire que la commande rentré par l'utilisateur est valide
+      switch (op){ // on switch sur l'opération voulue
         case '+' :
-        tempo = nmb1 + nmb2;
-        sprintf(message,"%f",tempo);
+        tempo = nmb1 + nmb2; // on fait l'opération
+        sprintf(message,"%f",tempo); // on le transforme en char
         j = 1;
         while(tempo/10>0){
             tempo = tempo/10;
@@ -198,16 +199,16 @@ int recois_envoie_message(int socketfd)
       
     }
 
-    char message2[15] = "Mauvais calcul";
+    char message2[19] = "Entrée non valide"; 
 
     void *pmes =&message[0];
     *((char*)pmes+j)='\0';
 
     if (m==1){
-    strcat(data, message);
+    strcat(data, message); // envoie la réponse du calcul au client
     }
-    else{
-      strcat(data, message2);
+    else{ // Si m!=1 cela veut dire que la commande rentré par l'utilisateur n'est pas valide
+      strcat(data, message2); // on renvoie donc au client "Entrée non valide"
     }
     strcat(data,"\0");
     renvoie_message(client_socket_fd, data);
