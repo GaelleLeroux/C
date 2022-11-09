@@ -6,6 +6,9 @@
 # include "liste.h"
 
 int main() {
+
+    ///////////////////////////////////////////////////////////////////////
+    // Exercice 1 : operator.c et operator.h
     int num1= 4;
     int num2= 3;
     char op='+' ;
@@ -53,13 +56,13 @@ int main() {
     }
 
     ///////////////////////////////////////////////////////////////////////
-    // Exercice 2
-    //lire_fichier("./message.txt");
+    // Exercice 2 : fichier.c et fichier.h
+    lire_fichier("./message.txt");
 
-    //ecrire_dans_fichier("./message.txt"," Hola");
+    ecrire_dans_fichier("./message.txt"," Hola");
 
     ///////////////////////////////////////////////////////////////////////
-    // Exercice 7
+    // Exercice 7 : liste.c et liste.h
 
     srand(time(NULL));
 
@@ -78,6 +81,7 @@ int main() {
 
     int cpt = nbr_couleurs;
     
+    // On ajoute à chaque boucle une nouvelle couleur aléatoire, selon le nombre de couleur que l'on veut.
     while(cpt != 1){
         cpt--;
         struct couleur *new_color;

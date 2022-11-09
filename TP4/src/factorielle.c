@@ -1,3 +1,9 @@
+/*
+* Nom de fichier : factorielle.c
+* Objectifs : Créer une fonction utilisable dans le main calculant le factorielle.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+*/
+
 # include <stdio.h>
 
 int factorielle(int num){

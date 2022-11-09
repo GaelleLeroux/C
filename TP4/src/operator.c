@@ -1,3 +1,9 @@
+/*
+* Nom de fichier : operator.c
+* Objectifs : coder une liste de fonctions utilisables dans main.c.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+*/
+
 # include "operator.h"
 
 

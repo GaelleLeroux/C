@@ -1,3 +1,9 @@
+/*
+* Nom de fichier : etudiant_bd.c
+* Objectifs : Ecrire dans un fichier texte toutes les informations des 5 étudiants.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+*/
+
 # include "fichier.h"
 #include <stdio.h>
 #include <string.h>
