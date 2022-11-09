@@ -1,4 +1,15 @@
 /*
+* Nom de fichier : serveur.c
+* Objectifs : Selon les données reçues de la part du client :
+*             - Réaliser un opération avec partir d'un opérande et de deux nombres.
+*             - Renvoyer un message reçu.
+*             - Extraire d'une image les couleurs prédominantes.
+*             Dans les trois cas, le résultat obtenu doit être stocké dans une chaîne de caractère
+*             simulant un fichier JSON.
+* Auteurs : Evann Nalewajek , Gaëlle Leroux
+*/
+
+/*
  * SPDX-FileCopyrightText: 2021 John Samuel
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -73,8 +84,8 @@ int renvoie_message(int client_socket_fd, char *data)
 }
 
 /* accepter la nouvelle connection d'un client et lire les données
- * envoyées par le client. En suite, le serveur envoie un message
- * en retour
+ * envoyées par le client. Ensuite, le serveur envoie un message
+ * en retour.
  */
 int recois_envoie_message(int socketfd)
 {
@@ -110,89 +121,113 @@ int recois_envoie_message(int socketfd)
   printf("Message recu: %s\n", data);
   char code[10];
   sscanf(data, "%s", code);
-  /////////////////////////////////////////////
-  char message[1024];
+  
+  // Sert à convertir le résultat du calcul en chaîne de caractère.
+  char solution_calcul_char[1024];
+
+  // check et temp servent à extraire une portion de la chaîne de caractères contenant les données.
   char check[1024];
   char temp[1024];
+  // Ces chaînes de caractères vont servir de comparateur, pour que la fonction sache quelle type d'opération il doit faire.
   char mess[11]="\"message\"";
   char coul[11]="\"couleurs\"";
   char cal[9]="\"calcul\"";
-  char valeur_mess[1024];
-  char *str = data;
-  while (str){
-    memset(valeur_mess,0,sizeof(valeur_mess));
-    str = strstr(str, "\"code\"");
-    if (str == NULL) {
+  // Création du pointeur qui va naviguer le long de la chaîne de caractères contenant les données.
+  char *ptr_data = data;
+
+  while (ptr_data){
+    ptr_data = strstr(ptr_data, "\"code\"");
+    if (ptr_data == NULL) {
             break;
         }
-    str = strchr(str, ':');
-        if (str == NULL) {
+    ptr_data = strchr(ptr_data, ':');
+        if (ptr_data == NULL) {
             break;
         }
-    str++;
-    str++;
+    // On avance dans la chaîne de caractères pour arriver à la partie qui nous intéresse.
+    ptr_data++;
+    ptr_data++;
     memset(check, 0, sizeof(check));
-    while (*str != ',') {
+
+    // On extrait la partie de la chaîne de caractères qui sert à déterminer si l'on souhaite un calcul, un message ou le nombre de couleur.
+    while (*ptr_data != ',') {
             memset(temp,0,sizeof(temp));
-            temp[0]=*str;
+            temp[0]=*ptr_data;
             strcat(check, temp);
-            str++;
+            ptr_data++;
         }
+
+    // Cas où l'on souhaite connaître le nombre de couleurs d'une image.
     if (strcmp(&coul[0],&check[0])==0){
+      // nmb_coul permet d'isoler l'information sur le nombre de couleur.
       char nmb_coul[100];
-      int fin_bou;
+      // Sert à convertir cette information isolée en entier.
+      int nmb_coul_int;
+
       memset(nmb_coul,0,strlen(nmb_coul));
-      str = strstr(str, "\"valeurs\"");
-      str = strchr(str, ':');
-      str++;
-      str++;
-      str++;
-      str++;
-      temp[0]=*str;
-      str++;
-      temp[1]=*str;
+      ptr_data = strstr(ptr_data, "\"valeurs\"");
+      ptr_data = strchr(ptr_data, ':');
+      ptr_data++;
+      ptr_data++;
+      ptr_data++;
+      ptr_data++;
+      temp[0]=*ptr_data;
+      ptr_data++;
+      temp[1]=*ptr_data;
       strcat(nmb_coul,temp);
       printf("nmb_coul : %s\n",nmb_coul);
-      fin_bou = atoi(nmb_coul);
-      str++;
-      str++;
-      str++;
-      str++;
-      for(int i=1;i<fin_bou+1;i++){
+      nmb_coul_int = atoi(nmb_coul);
+      ptr_data++;
+      ptr_data++;
+      ptr_data++;
+      ptr_data++;
+
+      // Chaque tour de boucle va print une nouvelle couleur, pointée par ptr_data.
+      for(int i=1;i<nmb_coul_int+1;i++){
         printf("%d : ",i);
-        while(*str!='\"'){
-          printf("%c",*str);
-          str++;
+        while(*ptr_data!='\"'){
+          printf("%c",*ptr_data);
+          ptr_data++;
         }
         printf("\n");
-        str++;
-        str++;
-        str++;
+        ptr_data++;
+        ptr_data++;
+        ptr_data++;
       }
     }
+
+    // Cas où l'on souhaite envoyer un message.
     if (strcmp(mess,check)==0){
       renvoie_message(client_socket_fd, data);
     }
+
+    // Cas où l'on souhaite réaliser un calcul.
     if (strcmp(check,cal)==0){
-      str = strstr(str, "\"valeurs\"");
-      str = strchr(str, ':');
-      str++;
-      str++;
-      str++;
-      str++;
-      char op= *str;
-      while(*str!=','){
-      str++;
+      ptr_data = strstr(ptr_data, "\"valeurs\"");
+      ptr_data = strchr(ptr_data, ':');
+      ptr_data++;
+      ptr_data++;
+      ptr_data++;
+      ptr_data++;
+
+      // On extrait l'opérateur dans une chaîne de caractères.
+      char op= *ptr_data;
+      while(*ptr_data!=','){
+      ptr_data++;
       }
-      str++;
-      str++;
-      float nmb1 = atof(str);
-      while(*str!=','){
-      str++;
+      ptr_data++;
+      ptr_data++;
+
+      // On extrait le premier nombre dans un float.
+      float nmb1 = atof(ptr_data);
+      while(*ptr_data!=','){
+      ptr_data++;
       }
-      str++;
-      str++;
-      float nmb2 = atof(str);
+      ptr_data++;
+      ptr_data++;
+
+      // On extrait le deuxième nombre dans un float.
+      float nmb2 = atof(ptr_data);
       float sol = 0;
       switch(op){
         case '+' : 
@@ -208,11 +243,12 @@ int recois_envoie_message(int socketfd)
           sol = nmb1*nmb2;
           break;
       }
+      // On stock les informations du calcul sous un format JSON.
       memset(data,0,1024);
       strcat(data,"[{\"code\": \"calcul\", \"valeurs\": [\"");
-      memset(message,0,1024);
-      sprintf(message,"%f",sol);
-      strcat(data,message);
+      memset(solution_calcul_char,0,1024);
+      sprintf(solution_calcul_char,"%f",sol);
+      strcat(data,solution_calcul_char);
       strcat(data,"\"]}]");
       int data_size = write(client_socket_fd, (void *)data, strlen(data));
       if (data_size < 0)
